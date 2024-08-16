@@ -18,33 +18,33 @@ const hasKeyModifiers = (e: KeyboardEvent) => {
 }
 
 export const SpriteEditorTools: FC = () => {
-  const { setActiveEditorTool } = useSpriteEditorContext()
+  const { editorTools } = useSpriteEditorContext()
 
   const onKeyDown = (e: KeyboardEvent) => {
     switch (e.code) {
       case 'KeyB': {
         if (hasKeyModifiers(e)) return
-        setActiveEditorTool(SpriteEditorTool.BRUSH)
+        editorTools.setActiveEditorTool(SpriteEditorTool.BRUSH)
         break
       }
       case 'KeyE': {
         if (hasKeyModifiers(e)) return
-        setActiveEditorTool(SpriteEditorTool.ERASER)
+        editorTools.setActiveEditorTool(SpriteEditorTool.ERASER)
         break
       }
       case 'KeyV': {
         if (hasKeyModifiers(e)) return
-        setActiveEditorTool(SpriteEditorTool.MOVE)
+        editorTools.setActiveEditorTool(SpriteEditorTool.MOVE)
         break
       }
       case 'KeyH': {
         if (hasKeyModifiers(e)) return
-        setActiveEditorTool(SpriteEditorTool.HAND)
+        editorTools.setActiveEditorTool(SpriteEditorTool.HAND)
         break
       }
       case 'KeyZ': {
         if (hasKeyModifiers(e)) return
-        setActiveEditorTool(SpriteEditorTool.ZOOM)
+        editorTools.setActiveEditorTool(SpriteEditorTool.ZOOM)
         break
       }
     }

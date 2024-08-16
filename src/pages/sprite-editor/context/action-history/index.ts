@@ -1,12 +1,19 @@
-import { useState } from 'react'
+import { debounce } from 'lodash-es'
+import { useCallback, useState } from 'react'
 
 export interface SpriteEditorHistoryEntry {
   action: string
   data: Uint8ClampedArray
 }
 
-export const useSpriteEditorHistory = (entry: SpriteEditorHistoryEntry) => {
-  const [entries, setEntries] = useState<SpriteEditorHistoryEntry[]>([entry])
+export type ActionHistory = ReturnType<typeof useActionHistory>
+
+interface Options {
+  collector: (action: string) => SpriteEditorHistoryEntry
+}
+
+export const useActionHistory = ({ collector }: Options) => {
+  const [entries, setEntries] = useState<SpriteEditorHistoryEntry[]>([])
   const [currentIndex, setIndex] = useState(0)
 
   const addEntry = (entry: SpriteEditorHistoryEntry) => {
@@ -18,35 +25,40 @@ export const useSpriteEditorHistory = (entry: SpriteEditorHistoryEntry) => {
     setIndex(newIndex)
   }
 
-  const setPreviousEntry = () => {
+  const undo = () => {
     const newIndex = currentIndex - 1
     if (!entries.length || !currentIndex) return
-    const previousImageData = entries[newIndex]
     setIndex(newIndex)
-    return previousImageData
   }
 
-  const setNextEntry = () => {
+  const redo = () => {
     const newIndex = currentIndex + 1
     if (!entries.length || newIndex > entries.length - 1) return
-    const nextImageData = entries[newIndex]
     setIndex(newIndex)
-    return nextImageData
   }
 
-  const setEntryByIndex = (index: number) => {
+  const load = (index: number) => {
     if (!entries.length || index > entries.length - 1) return
     const nextImageData = entries[index]
     setIndex(index)
     return nextImageData
   }
 
+  const register = useCallback(
+    debounce((action: string) => {
+      const data = collector(action)
+      addEntry(data)
+      return
+    }, 200),
+    [currentIndex]
+  )
+
   return {
-    addEntry,
-    setNextEntry,
-    setEntryByIndex,
-    setPreviousEntry,
+    undo,
+    redo,
+    load,
+    register,
     currentIndex,
-    entries
+    entries,
   }
 }

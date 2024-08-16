@@ -6,8 +6,10 @@ interface UseSpriteEditorCanvasKeyBindings {
   undo: () => void | Promise<void>
 }
 
-export const useSpriteEditorCanvasKeyBindings = (handlers: UseSpriteEditorCanvasKeyBindings) => {
-  const { editorHistory } = useSpriteEditorContext()
+export const useSpriteEditorCanvasKeyBindings = (
+  handlers: UseSpriteEditorCanvasKeyBindings
+) => {
+  const { actionHistory } = useSpriteEditorContext()
 
   const handleKeyDown = async (e: KeyboardEvent) => {
     if (e.code === 'KeyR' && e.metaKey) return
@@ -20,5 +22,5 @@ export const useSpriteEditorCanvasKeyBindings = (handlers: UseSpriteEditorCanvas
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [editorHistory.currentIndex])
+  }, [actionHistory.currentIndex])
 }

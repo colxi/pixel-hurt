@@ -1,8 +1,35 @@
-import { useContext } from 'react'
-import { SpriteEditorContext } from './SpriteEditorContext'
+import { createContextProvider } from '../../../tools/utils'
+import { useActionHistory } from './action-history'
+import { useCanvasMouse } from './canvas-mouse'
+import { useEditorImage } from './editor-image'
+import { useEditorTools } from './editor-tools'
 
-export const useSpriteEditorContext = () => {
-  const context = useContext(SpriteEditorContext)
-  if (!context) throw new Error('🔥 SpriteEditorContext not available!')
-  return context
-}
+export type UseSpriteEditor = ReturnType<typeof useSpriteEditorContext>
+
+export const [useSpriteEditorContext, SpriteEditorContextProvider] =
+  createContextProvider('SpriteEditorContext', () => {
+    const canvasMouse = useCanvasMouse()
+    const editorImage = useEditorImage()
+    const actionHistory = useActionHistory({
+      collector: (action) => {
+        const arrayBuffer = new ArrayBuffer(
+          editorImage.width * editorImage.height * 4
+        )
+        const imageData = new Uint8ClampedArray(arrayBuffer)
+        imageData.set(editorImage.imageBuffer)
+        return { action: action, data: imageData }
+      },
+    })
+    const editorTools = useEditorTools({
+      editorImage,
+      canvasMouse,
+      actionHistory,
+    })
+
+    return {
+      actionHistory,
+      editorImage,
+      editorTools,
+      canvasMouse,
+    }
+  })

@@ -1,9 +1,11 @@
-import { SpriteEditorContextProvider } from '../context/SpriteEditorContext'
+import { SpriteEditorContextProvider } from '../context'
 import { SpriteEditorCanvas } from './partials/SpriteEditorCanvas'
 import { SpriteEditorTools } from './partials/SpriteEditorTools'
 import { SpriteEditorPalette } from './partials/SpriteEditorPalette'
 import { SpriteEditorHistory } from './partials/SpriteEditorHistory'
 import styled from 'styled-components'
+import { SpriteEditorNavigator } from './partials/SpriteEditorNavigator'
+import { SpriteEditorInfo } from './partials/SpriteEditorInfo'
 
 
 const SpriteEditorLayout = styled.div` 
@@ -12,6 +14,9 @@ const SpriteEditorLayout = styled.div`
   grid-template-rows:600px;
   gap: 20px;
   padding: 20px;
+  * {
+    user-select: none; 
+  }
 `
 
 const Sidebar = styled.div` 
@@ -29,6 +34,8 @@ export const SpriteEditor = () => {
           <SpriteEditorTools />
           <SpriteEditorCanvas />
           <Sidebar>
+            <SpriteEditorInfo />
+            <SpriteEditorNavigator />
             <SpriteEditorPalette />
             <SpriteEditorHistory />
           </Sidebar>

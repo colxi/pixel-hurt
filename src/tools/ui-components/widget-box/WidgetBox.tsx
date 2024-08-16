@@ -2,12 +2,11 @@ import type { FC } from 'react'
 import styled from 'styled-components'
 
 
-const WidgetBoxContainer = styled.div<{ height: number }>`
+const WidgetBoxContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   place-content: start;
   border:1px solid #bf4f74;
-  height:${p => p.height}px;
 `
 
 const WidgetBoxTitle = styled.div`
@@ -15,22 +14,23 @@ const WidgetBoxTitle = styled.div`
   height: 30px;
 `
 
-const WidgetBoxBody = styled.div`
+const WidgetBoxBody = styled.div<{ height: WidgetBoxProps['height'] }>`
   overflow-y: scroll;
+  height:${p => p.height === 'auto' ? 'auto' : `${p.height}px`};
 `
 
 interface WidgetBoxProps {
   children: React.ReactNode
   title?: string
-  height?: number
+  height?: number | 'auto'
 }
 
-export const WidgetBox: FC<WidgetBoxProps> = ({ children, title, height = 200 }) => {
+export const WidgetBox: FC<WidgetBoxProps> = ({ children, title, height = 'auto' }) => {
   return (
     <>
-      <WidgetBoxContainer height={height}>
+      <WidgetBoxContainer>
         {title && <WidgetBoxTitle>{title}</WidgetBoxTitle>}
-        <WidgetBoxBody>
+        <WidgetBoxBody height={height}>
           {children}
         </WidgetBoxBody>
       </WidgetBoxContainer>

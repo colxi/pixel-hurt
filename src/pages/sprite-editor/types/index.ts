@@ -3,7 +3,7 @@ export enum SpriteEditorTool {
   BRUSH = 'BRUSH',
   ERASER = 'ERASER',
   HAND = 'HAND',
-  ZOOM = 'ZOOM'
+  ZOOM = 'ZOOM',
 }
 
 export type Color = {
@@ -11,4 +11,14 @@ export type Color = {
   g: number
   b: number
   a: number
+}
+
+export interface Coordinates {
+  x: number
+  y: number
+}
+
+export interface Size {
+  width: number
+  height: number
 }

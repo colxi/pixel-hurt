@@ -12,6 +12,7 @@ export const createContextProvider = <
     ContextProvider: FC<ProviderProps>
   ] => {
   const Context = createContext(null as unknown as CONTEXT_DATA)
+  Context.displayName = contextName
 
   const ContextProvider: FC<ProviderProps> = ({ children }) => {
     return (

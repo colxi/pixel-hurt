@@ -4,15 +4,15 @@ import { WidgetBox } from '../../../../tools/ui-components/widget-box/WidgetBox'
 
 
 export const SpriteEditorHistory: FC = () => {
-  const { editorHistory, loadChanges } = useSpriteEditorContext()
+  const { actionHistory } = useSpriteEditorContext()
 
   return (
     <>
       <WidgetBox title="History">
-        {editorHistory.entries.map(
+        {actionHistory.entries.map(
           (item, index) =>
-            <div key={index} onClick={() => loadChanges(index)}>
-              {item.action}  {index === editorHistory.currentIndex ? '<--' : ''}
+            <div key={index} onClick={() => actionHistory.load(index)}>
+              {item.action}  {index === actionHistory.currentIndex ? '<--' : ''}
             </div>
         )}
       </WidgetBox>
