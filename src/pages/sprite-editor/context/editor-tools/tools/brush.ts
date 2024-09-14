@@ -1,12 +1,12 @@
-import { CanvasMouse } from './../useCanvasMouse'
-import { Color, Coordinates } from '../../../types/index'
+import { useEvent } from '../../../../../tools/hooks'
 import {
   CanvasMouseEvent,
   getCanvasClickMouseCoords,
 } from '../../../presentation/utils'
-import { useEvent } from '../../../../../tools/hooks'
+import { Color, Coordinates } from '../../../types'
 import { ActionHistory } from '../../action-history'
-import { EditorImage } from '../useEditorImage'
+import { CanvasMouse } from '../../canvas-mouse'
+import { EditorImage } from '../../editor-image'
 
 /**
  *
@@ -37,24 +37,6 @@ const isDistanceGreaterThanOne = (start: Coordinates, end: Coordinates) => {
   return Math.abs(start.x - end.x) > 1 || Math.abs(start.y - end.y) > 1
 }
 
-export type EditorTool = {
-  enable: () => void | Promise<void>
-  disable: () => void | Promise<void>
-  onMouseMove: (e: CanvasMouseEvent) => void | Promise<void>
-  onMouseDown: (e: CanvasMouseEvent) => void | Promise<void>
-  onMouseUp: (e: CanvasMouseEvent) => void | Promise<void>
-}
-
-export const noOpTool = () => {
-  return {
-    enable: () => {},
-    disable: () => {},
-    onMouseMove: (_e: CanvasMouseEvent) => {},
-    onMouseDown: (_e: CanvasMouseEvent) => {},
-    onMouseUp: (_e: CanvasMouseEvent) => {},
-  }
-}
-
 export const useBrushTool = (
   editorImage: EditorImage,
   canvasMouse: CanvasMouse,
@@ -74,10 +56,8 @@ export const useBrushTool = (
   const onMouseMove = useEvent(async (e: CanvasMouseEvent) => {
     if (!canvasMouse.isMouseDown) return
 
-    const canvasZoom = 10
-    const clickCoords = getCanvasClickMouseCoords(e, canvasZoom)
-
     // fill gaps with a line in case movement is too fast
+    const clickCoords = getCanvasClickMouseCoords(e, editorImage.zoom)
     const hasGaps = isDistanceGreaterThanOne(
       canvasMouse.lastMouseCoords,
       clickCoords
@@ -86,19 +66,26 @@ export const useBrushTool = (
       const points = getLinePoints(canvasMouse.lastMouseCoords, clickCoords)
       for (const point of points) {
         await paintPixel(
-          point.x + editorImage.viewBoxCoords.x,
-          point.y + editorImage.viewBoxCoords.y
+          point.x + editorImage.viewBox.position.x,
+          point.y + editorImage.viewBox.position.y
         )
       }
     }
     // render the pixel
     await paintPixel(
-      clickCoords.x + editorImage.viewBoxCoords.x,
-      clickCoords.y + editorImage.viewBoxCoords.y
+      clickCoords.x + editorImage.viewBox.position.x,
+      clickCoords.y + editorImage.viewBox.position.y
     )
   })
 
-  const onMouseDown = useEvent((_e: CanvasMouseEvent) => {})
+  const onMouseDown = useEvent(async (e: CanvasMouseEvent) => {
+    const clickCoords = getCanvasClickMouseCoords(e, editorImage.zoom)
+    // render the pixel
+    await paintPixel(
+      clickCoords.x + editorImage.viewBox.position.x,
+      clickCoords.y + editorImage.viewBox.position.y
+    )
+  })
 
   const onMouseUp = useEvent((_e: CanvasMouseEvent) => {})
 

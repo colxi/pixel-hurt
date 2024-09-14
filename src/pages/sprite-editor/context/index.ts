@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { createContextProvider } from '../../../tools/utils'
 import { useActionHistory } from './action-history'
 import { useCanvasMouse } from './canvas-mouse'
@@ -9,9 +10,11 @@ export type UseSpriteEditor = ReturnType<typeof useSpriteEditorContext>
 export const [useSpriteEditorContext, SpriteEditorContextProvider] =
   createContextProvider('SpriteEditorContext', () => {
     const canvasMouse = useCanvasMouse()
+
     const editorImage = useEditorImage()
+
     const actionHistory = useActionHistory({
-      collector: (action) => {
+      onAdd: (action) => {
         const arrayBuffer = new ArrayBuffer(
           editorImage.width * editorImage.height * 4
         )
@@ -19,7 +22,11 @@ export const [useSpriteEditorContext, SpriteEditorContextProvider] =
         imageData.set(editorImage.imageBuffer)
         return { action: action, data: imageData }
       },
+      onChange: (entry) => {
+        editorImage.imageBuffer.set(entry.data)
+      },
     })
+
     const editorTools = useEditorTools({
       editorImage,
       canvasMouse,

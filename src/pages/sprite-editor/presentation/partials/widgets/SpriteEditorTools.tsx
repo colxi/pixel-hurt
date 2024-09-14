@@ -1,16 +1,16 @@
 import type { FC } from 'react'
 import { useEffect } from 'react'
-import { useSpriteEditorContext } from '../../context'
-import { SpriteEditorTool } from '../../types'
+import { useSpriteEditorContext } from '../../../context'
+import { SpriteEditorTool } from '../../../types'
 
-import { WidgetBox } from '../../../../tools/ui-components/widget-box/WidgetBox'
+import { WidgetBox } from '../../../../../tools/ui-components/widget-box/WidgetBox'
 import {
   CrossIcon,
   BrushIcon,
   EraserIcon,
   HandIcon,
   MagnifyingGlassIcon
-} from '../../../../tools/ui-components/icons'
+} from '../../../../../tools/ui-components/icons'
 
 
 const hasKeyModifiers = (e: KeyboardEvent) => {

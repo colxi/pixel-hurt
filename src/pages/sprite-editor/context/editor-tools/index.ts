@@ -3,7 +3,10 @@ import { SpriteEditorTool } from '../../types'
 import { CanvasMouse } from '../canvas-mouse'
 import { ActionHistory } from '../action-history'
 import { EditorImage } from '../editor-image'
-import { EditorTool, noOpTool, useBrushTool } from './tools/brush'
+import { useBrushTool } from './tools/brush'
+import { EditorTool } from './tools/types/indx'
+import { noOpTool } from './tools/noop'
+import { useHandTool } from './tools/hand'
 
 interface Options {
   editorImage: EditorImage
@@ -20,17 +23,17 @@ export const useEditorTools = ({
     SpriteEditorTool.BRUSH
   )
 
-  const tool: Record<SpriteEditorTool, EditorTool> = {
+  const tool = {
     [SpriteEditorTool.BRUSH]: useBrushTool(
       editorImage,
       canvasMouse,
       actionHistory
     ),
     [SpriteEditorTool.ERASER]: noOpTool(),
-    [SpriteEditorTool.HAND]: noOpTool(),
+    [SpriteEditorTool.HAND]: useHandTool(editorImage, canvasMouse),
     [SpriteEditorTool.MOVE]: noOpTool(),
     [SpriteEditorTool.ZOOM]: noOpTool(),
-  }
+  } satisfies Record<SpriteEditorTool, EditorTool>
 
   return {
     tool,

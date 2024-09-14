@@ -1,6 +1,6 @@
 import type { FC } from 'react'
 import styled from 'styled-components'
-import { WidgetBox } from '../../../../tools/ui-components/widget-box/WidgetBox'
+import { WidgetBox } from '../../../../../tools/ui-components/widget-box/WidgetBox'
 
 const PaletteItem = styled.div`
   width: 20px;

@@ -6,6 +6,7 @@ export const SpriteCanvasContainer = styled.div`
   height: 500px;
   cursor: none;
   border: 2px solid #bf4f74;
+  overflow: hidden;
 `
 
 export const SpriteCanvas = styled.canvas`

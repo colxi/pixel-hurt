@@ -19,6 +19,6 @@ export interface Coordinates {
 }
 
 export interface Size {
-  width: number
-  height: number
+  w: number
+  h: number
 }

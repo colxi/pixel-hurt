@@ -1,11 +1,11 @@
 import { SpriteEditorContextProvider } from '../context'
 import { SpriteEditorCanvas } from './partials/SpriteEditorCanvas'
-import { SpriteEditorTools } from './partials/SpriteEditorTools'
-import { SpriteEditorPalette } from './partials/SpriteEditorPalette'
-import { SpriteEditorHistory } from './partials/SpriteEditorHistory'
+import { SpriteEditorTools } from './partials/widgets/SpriteEditorTools'
+import { SpriteEditorPalette } from './partials/widgets/SpriteEditorPalette'
+import { SpriteEditorHistory } from './partials/widgets/SpriteEditorHistory'
 import styled from 'styled-components'
-import { SpriteEditorNavigator } from './partials/SpriteEditorNavigator'
-import { SpriteEditorInfo } from './partials/SpriteEditorInfo'
+import { SpriteEditorNavigator } from './partials/widgets/navigator/SpriteEditorNavigator'
+import { SpriteEditorInfo } from './partials/widgets/SpriteEditorInfo'
 
 
 const SpriteEditorLayout = styled.div` 

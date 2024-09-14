@@ -1,33 +1,14 @@
-import type { FC, MouseEvent } from 'react'
-import React, { useEffect, useRef, useState } from 'react'
+import type { FC } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSpriteEditorContext } from '../../context'
-import { SpriteCanvas, SpriteCanvasContainer, SpriteCanvasUI } from './SpriteEditorCanvas.styles'
-import { Coordinates, SpriteEditorTool } from '../../types'
+import { SpriteCanvasContainer, SpriteCanvasUI } from './SpriteEditorCanvas.styles'
 import { useSpriteEditorCanvasKeyBindings } from './SpriteEditorCanvas.keyBindings'
 import { CanvasMouseEvent, getCanvasClickMouseCoords } from '../utils'
-import { PersistentCanvas } from './PersistentCanvas'
-
-function getLinePoint(start: Coordinates, end: Coordinates) {
-  const xDistance = end.x - start.x
-  const yDistance = end.y - start.y
-  const hypotenuseLength = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
-  const data: Coordinates[] = []
-  for (let i = 0; i < hypotenuseLength; i++) {
-    const ratio = i / hypotenuseLength
-    const smallerXLen = xDistance * ratio
-    const smallerYLen = yDistance * ratio
-    data.push({
-      x: Math.round(start.x + smallerXLen),
-      y: Math.round(start.y + smallerYLen)
-    })
-  }
-  return data
-}
-
-
-const throwError = (e: unknown) => {
-  throw e
-}
+import { PersistentCanvas } from '../../../../tools/ui-components/persistent-canvas/PersistentCanvas'
+import { useEvent } from '../../../../tools/hooks'
+import { AnimationEngine } from '../../../../tools/utils/animation-engine'
+import { Size } from '../../types'
+import { minMax } from '../../../../tools/utils/math'
 
 export const SpriteEditorCanvas: FC = () => {
   const {
@@ -42,13 +23,11 @@ export const SpriteEditorCanvas: FC = () => {
     redo: actionHistory.redo
   })
 
-
+  const [viewportSize] = useState<Size>({ w: 500, h: 500 })
   const [canvasMouseCoords, setCanvasMouseCoords] = useState({ x: 0, y: 0 })
-  const [canvasZoom, setCanvasZoom] = useState(10)
-  const [requestAnimationFrameId, setRequestAnimationFrameId] = useState<number>(0)
-
-  const canvasUIRef = useRef<HTMLCanvasElement>(null)
   const [imageCanvasContext, setImageCanvasContext] = useState<CanvasRenderingContext2D | null>()
+  const animation = useMemo(() => new AnimationEngine('ImageEditor'), [])
+  const canvasUIRef = useRef<HTMLCanvasElement>(null)
 
   const getUICanvasContext = () => {
     const canvas = canvasUIRef.current
@@ -59,27 +38,19 @@ export const SpriteEditorCanvas: FC = () => {
   }
 
 
-  const onCanvasMouseMove = async (e: CanvasMouseEvent) => {
-    const { x, y } = getCanvasClickMouseCoords(e, canvasZoom)
+  const handleCanvasMouseMove = async (e: CanvasMouseEvent) => {
+    const { x, y } = getCanvasClickMouseCoords(e, editorImage.zoom)
     setCanvasMouseCoords({ x, y })
     renderCursor(x, y)
-
     editorTools.tool[editorTools.activeEditorTool].onMouseMove(e)
 
     canvasMouse.setLastMouseCoords({ x, y })
     canvasMouse.setIsFirstActionTick(false)
   }
 
-  const onCanvasClick = async (e: CanvasMouseEvent) => {
-    // const { x, y } = getCanvasClickMouseCoords(e, canvasZoom)
-    // switch (editorTools.activeEditorTool) {
-    //   case SpriteEditorTool.BRUSH:
-    //     await draw(x, y)
-    //     break
-    //   case SpriteEditorTool.ERASER:
-    //     await erase(x, y)
-    //     break
-    // }
+  const handleCanvasClick = async (e: CanvasMouseEvent) => {
+    canvasMouse.setMouseDown()
+    editorTools.tool[editorTools.activeEditorTool].onMouseDown(e)
   }
 
   const renderCursor = (x: number, y: number) => {
@@ -87,74 +58,96 @@ export const SpriteEditorCanvas: FC = () => {
     context.strokeStyle = 'red'
     context.clearRect(0, 0, editorImage.width, editorImage.height)
     context.beginPath()
-    context.strokeRect(x * canvasZoom, y * canvasZoom, 1 * canvasZoom, 1 * canvasZoom)
+    context.strokeRect(x * editorImage.zoom, y * editorImage.zoom, 1 * editorImage.zoom, 1 * editorImage.zoom)
     context.stroke()
     context.closePath()
   }
 
-  const draw = async (x: number, y: number) => {
-    // await paintPixel(x + viewBoxCoords.x, y + viewBoxCoords.y, { r: 255, g: 255, b: 255, a: 255 })
-    // registerChanges('Draw')
-  }
-
-  const erase = async (x: number, y: number) => {
-    // await paintPixel(x + viewBoxCoords.x, y + viewBoxCoords.y, { r: 0, g: 0, b: 0, a: 0 })
-    // registerChanges('Erase')
-  }
-
-  const redrawCanvas = async () => {
+  const renderCanvas = async () => {
     if (!imageCanvasContext) return
-    // clear the canvas
-    imageCanvasContext.clearRect(0, 0, editorImage.width, editorImage.height)
+
+    // paint the background in pink to show the viewport
+    imageCanvasContext.fillStyle = '#bf4f74'
+    imageCanvasContext.rect(
+      0,
+      0,
+      viewportSize.w / editorImage.zoom,
+      viewportSize.h / editorImage.zoom
+    )
+    imageCanvasContext.fill()
+    // clear the part of the canvas that has data in the buffer.
+    // Coordinates that are before or after the actual viewport are not cleared
+    imageCanvasContext.clearRect(
+      editorImage.viewBox.position.x > 0 ? 0 : Math.abs(editorImage.viewBox.position.x),
+      editorImage.viewBox.position.y > 0 ? 0 : Math.abs(editorImage.viewBox.position.y),
+      editorImage.viewBox.size.w + editorImage.viewBox.position.x > viewportSize.w
+        ? (viewportSize.w / editorImage.zoom) - (editorImage.viewBox.position.x + editorImage.viewBox.size.w - viewportSize.w)
+        : viewportSize.w / editorImage.zoom,
+      editorImage.viewBox.size.h + editorImage.viewBox.position.y > viewportSize.h
+        ? (viewportSize.h / editorImage.zoom) - (editorImage.viewBox.position.y + editorImage.viewBox.size.h - viewportSize.h)
+        : viewportSize.h / editorImage.zoom,
+    )
+
+
     // copy the image fom the buffer to the canvas
-    const imageData = new ImageData(editorImage.imageBuffer, editorImage.width, editorImage.height)
-    const bitmap = await createImageBitmap(
-      imageData,
-      editorImage.viewBoxCoords.x,
-      editorImage.viewBoxCoords.y,
+    const imageData = new ImageData(
+      editorImage.imageBuffer,
       editorImage.width,
       editorImage.height
     )
+    const bitmap = await createImageBitmap(
+      imageData,
+      editorImage.viewBox.position.x,
+      editorImage.viewBox.position.y,
+      editorImage.width,
+      editorImage.height,
+    )
     imageCanvasContext.drawImage(bitmap, 0, 0)
-    // request next animation frame
-    const id = requestAnimationFrame(redrawCanvas)
-    setRequestAnimationFrameId(id)
   }
 
+  const animationTick = useEvent(() => {
+    renderCanvas()
+    animation.requestFrame(animationTick)
+  })
 
-  const requestFrame = () => {
-    cancelAnimationFrame(requestAnimationFrameId)
-    const id = requestAnimationFrame(redrawCanvas)
-    setRequestAnimationFrameId(id)
-  }
+  const setCanvasZoom = useEvent(() => {
+    if (!imageCanvasContext) return
+    imageCanvasContext.resetTransform()
+    imageCanvasContext.scale(editorImage.zoom, editorImage.zoom)
+  })
 
   useEffect(() => {
     if (!imageCanvasContext) return
-    imageCanvasContext.imageSmoothingEnabled = false
-    imageCanvasContext.resetTransform()
-    imageCanvasContext.scale(canvasZoom, canvasZoom)
-    requestFrame()
+    setCanvasZoom()
+    animationTick()
   }, [
-    imageCanvasContext
+    imageCanvasContext,
+    editorImage.zoom,
+    actionHistory.currentIndex,
+    editorImage.viewBox.position
   ])
 
-  useEffect(() => {
-    requestFrame()
-  }, [
-    actionHistory.currentIndex,
-    editorImage.viewBoxCoords
-  ]
-  )
+
+  const handleWheelGesture = useEvent((event: WheelEvent) => {
+    const isZoomGesture = event.ctrlKey
+    if (!isZoomGesture) return
+    const zoomAmount = event.deltaY > 0 ? -0.1 : 0.1
+    const newZoom = minMax({ value: editorImage.zoom + zoomAmount, min: 1, max: 30 })
+    console.log(newZoom)
+    editorImage.setZoom(newZoom)
+  })
 
   useEffect(() => {
+    if (!canvasUIRef.current) throw new Error('Canvas UI not found')
     window.addEventListener('mouseup', canvasMouse.setMouseUp)
     const uiContext = getUICanvasContext()
     uiContext.imageSmoothingEnabled = false
     actionHistory.register('Create')
-
+    canvasUIRef.current.addEventListener('wheel', handleWheelGesture, { passive: false })
     return () => {
-      cancelAnimationFrame(requestAnimationFrameId)
+      animation.stop()
       window.removeEventListener('mouseup', canvasMouse.setMouseUp)
+      canvasUIRef.current?.removeEventListener('wheel', handleWheelGesture)
     }
   }, [])
 
@@ -162,20 +155,17 @@ export const SpriteEditorCanvas: FC = () => {
     <>
       <div>
         <SpriteCanvasContainer>
-          {/* <SpriteCanvas ref={canvasSpriteRef} width={spriteWidth} height={spriteHeight} /> */}
-
           <SpriteCanvasUI
             ref={canvasUIRef}
-            onMouseMove={onCanvasMouseMove}
-            onMouseDown={canvasMouse.setMouseDown}
-            onClick={onCanvasClick}
-            width={editorImage.width}
-            height={editorImage.height}
+            onMouseMove={handleCanvasMouseMove}
+            onMouseDown={handleCanvasClick}
+            width={viewportSize.w}
+            height={viewportSize.h}
           />
           <PersistentCanvas
             contextRef={setImageCanvasContext}
-            width={editorImage.width}
-            height={editorImage.height}
+            width={viewportSize.w}
+            height={viewportSize.h}
           />
 
         </SpriteCanvasContainer>
