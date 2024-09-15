@@ -4,18 +4,23 @@
  *
  */
 export class AnimationEngine {
-  constructor(consumerId: string) {
-    console.log('AnimationEngine for:', consumerId)
+  constructor(instanceId: string) {
+    this.instanceId = instanceId
+    this.requestAnimationFrameId = -1
+    console.log('AnimationEngine instance:', instanceId)
   }
-  private id: number = 0
+
+  private requestAnimationFrameId: number
+  private instanceId: string
 
   public requestFrame(callback: FrameRequestCallback) {
-    cancelAnimationFrame(this.id)
-    this.id = requestAnimationFrame(callback)
+    cancelAnimationFrame(this.requestAnimationFrameId)
+    this.requestAnimationFrameId = requestAnimationFrame(callback)
   }
 
   public stop() {
-    cancelAnimationFrame(this.id)
+    console.log('AnimationEngine instance:', this.instanceId)
+    cancelAnimationFrame(this.requestAnimationFrameId)
   }
 }
 

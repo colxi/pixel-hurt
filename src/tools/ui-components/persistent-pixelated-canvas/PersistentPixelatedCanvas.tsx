@@ -3,6 +3,7 @@ import React from 'react'
 interface Props {
   width: number
   height: number
+  className?: string
   contextRef: (a: CanvasRenderingContext2D | null) => void
   onMouseDown?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onMouseMove?: (e: React.MouseEvent<HTMLCanvasElement>) => void
@@ -14,7 +15,11 @@ interface Props {
  * This Canvas is not rerendered when the parent component is rerendered.
  * 
  */
-export class PersistentCanvas extends React.Component<Props> {
+export class PersistentPixelatedCanvas extends React.Component<Props> {
+  static defaultProps = {
+    className: 'PersistentPixelatedCanvas'
+  };
+
   shouldComponentUpdate() {
     return false
   }
@@ -43,6 +48,7 @@ export class PersistentCanvas extends React.Component<Props> {
   render() {
     return (
       <canvas
+        className={this.props.className}
         width={this.props.width}
         height={this.props.height}
         ref={this.handleRefPropagation}

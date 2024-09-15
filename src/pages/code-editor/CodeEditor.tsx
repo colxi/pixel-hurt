@@ -85,7 +85,6 @@ export const CodeEditor: FC = () => {
     editorService.openCodeEditor = async (input: any, source: MonacoEditor) => {
       const result = await openEditorBase(input, source)
       // TODO: Ignore the request in case is not any of the user files
-      console.log(input.resource)
       await loadFile(input.resource.path)
       editorInstance.setSelection(input.options.selection)
       editorInstance.revealLine(input.options.selection.startLineNumber)
@@ -171,7 +170,7 @@ export const CodeEditor: FC = () => {
   }
 
 
-  useEffect(() => { console.log(editorFileModels) }, [editorFileModels])
+  // useEffect(() => { console.log(editorFileModels) }, [editorFileModels])
   useEffect(onEditorReady, [editorInstance])
 
   return <>

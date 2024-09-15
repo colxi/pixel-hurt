@@ -3,43 +3,26 @@ import { SpriteEditorCanvas } from './partials/SpriteEditorCanvas'
 import { SpriteEditorTools } from './partials/widgets/SpriteEditorTools'
 import { SpriteEditorPalette } from './partials/widgets/SpriteEditorPalette'
 import { SpriteEditorHistory } from './partials/widgets/SpriteEditorHistory'
-import styled from 'styled-components'
 import { SpriteEditorNavigator } from './partials/widgets/navigator/SpriteEditorNavigator'
 import { SpriteEditorInfo } from './partials/widgets/SpriteEditorInfo'
-
-
-const SpriteEditorLayout = styled.div` 
-  display: grid;
-  grid-template-columns: 50px 500px 200px;
-  grid-template-rows:600px;
-  gap: 20px;
-  padding: 20px;
-  * {
-    user-select: none; 
-  }
-`
-
-const Sidebar = styled.div` 
-  display: grid;
-  grid-template-columns: 100%;
-  place-content: start;
-  gap: 20px;
-`
+import styles from './SpriteEditor.module.scss'
+import { ImageEditorCanvas } from './partials/image-editor-canvas/ImageEditorCanvas'
 
 export const SpriteEditor = () => {
   return (
     <>
       <SpriteEditorContextProvider >
-        <SpriteEditorLayout>
+        <main className={styles.layout}>
           <SpriteEditorTools />
-          <SpriteEditorCanvas />
-          <Sidebar>
+          <ImageEditorCanvas />
+          {/* <SpriteEditorCanvas /> */}
+          <aside className={styles.sidebar}>
             <SpriteEditorInfo />
             <SpriteEditorNavigator />
             <SpriteEditorPalette />
             <SpriteEditorHistory />
-          </Sidebar>
-        </SpriteEditorLayout>
+          </aside>
+        </main>
       </SpriteEditorContextProvider >
     </>
   )

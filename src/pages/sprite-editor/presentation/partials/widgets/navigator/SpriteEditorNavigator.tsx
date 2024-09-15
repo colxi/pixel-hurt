@@ -4,7 +4,7 @@ import { useSpriteEditorContext } from '../../../../context'
 import { CanvasMouseEvent, getCanvasClickMouseCoords } from '../../../utils'
 import styles from './SpriteEditorNavigator.module.css'
 import { useEvent } from '../../../../../../tools/hooks'
-import { PersistentCanvas } from '../../../../../../tools/ui-components/persistent-canvas/PersistentCanvas'
+import { PersistentPixelatedCanvas } from '../../../../../../tools/ui-components/persistent-pixelated-canvas/PersistentPixelatedCanvas'
 import { Coordinates, Size } from '../../../../types'
 import { AnimationEngine } from '../../../../../../tools/utils/animation-engine'
 import { minMax } from '../../../../../../tools/utils/math'
@@ -50,11 +50,11 @@ export const SpriteEditorNavigator: FC = () => {
   }, [editorImage.viewBox.size])
 
   const renderTick = useEvent(() => {
-    redrawCanvas()
+    renderCanvas()
     animation.requestFrame(renderTick)
   })
 
-  const redrawCanvas = async () => {
+  const renderCanvas = async () => {
     if (!navigatorCanvasContext) return
     const imageData = new ImageData(editorImage.imageBuffer, editorImage.width, editorImage.height)
     const bitmap = await createImageBitmap(imageData)
@@ -70,8 +70,6 @@ export const SpriteEditorNavigator: FC = () => {
       editorImage.viewBox.size.w,
       editorImage.viewBox.size.h
     )
-    navigatorCanvasContext.fill()
-    navigatorCanvasContext.stroke()
   }
 
 
@@ -137,7 +135,7 @@ export const SpriteEditorNavigator: FC = () => {
 
   return <>
     <WidgetBox title={`Navigator (${editorImage.zoom})`}>
-      <PersistentCanvas
+      <PersistentPixelatedCanvas
         width={NAVIGATOR_CANVAS_SIZE.w}
         height={NAVIGATOR_CANVAS_SIZE.h}
         contextRef={setNavigatorCanvasContext}

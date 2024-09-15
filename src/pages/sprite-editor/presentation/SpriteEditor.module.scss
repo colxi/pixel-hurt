@@ -1,0 +1,17 @@
+.layout {
+  display: grid;
+  grid-template-columns: 50px 500px 200px;
+  grid-template-rows: 600px;
+  gap: 20px;
+  padding: 20px;
+  * {
+    user-select: none;
+  }
+}
+
+.sidebar {
+  display: grid;
+  grid-template-columns: 100%;
+  place-content: start;
+  gap: 20px;
+}
