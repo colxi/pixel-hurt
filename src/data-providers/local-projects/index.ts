@@ -1,5 +1,5 @@
 import fs from '@zenfs/core'
-import { rmdirRecursiveSync, toDashedCase } from '../../tools/utils'
+import { toDashedCase } from '../../tools/utils'
 import { LocalProject, LocalProjectNew } from './types'
 import { LocalProjectNewSchema } from './schemas'
 
@@ -32,7 +32,7 @@ const createLocalProject = (projectOptions: LocalProjectNew): LocalProject => {
 }
 
 const deleteLocalProject = (id: LocalProject['id']): void => {
-  rmdirRecursiveSync(`/projects/${id}`)
+  fs.rmSync(`/projects/${id}`, { recursive: true })
 }
 
 export const LocalProjectsDataProvider = {

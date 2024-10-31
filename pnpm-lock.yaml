@@ -24,11 +24,11 @@ importers:
         specifier: ^4.6.0
         version: 4.6.0(monaco-editor@0.50.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@zenfs/core':
-        specifier: ^0.16.2
-        version: 0.16.2
+        specifier: ^1.2.0
+        version: 1.2.1
       '@zenfs/dom':
-        specifier: ^0.2.14
-        version: 0.2.14(@zenfs/core@0.16.2)
+        specifier: ^1.0.0
+        version: 1.0.2(@zenfs/core@1.2.1)
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
@@ -52,7 +52,7 @@ importers:
         version: 6.1.12(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       vite-tsconfig-paths:
         specifier: ^5.0.1
-        version: 5.0.1(typescript@5.5.4)(vite@5.3.5(@types/node@20.14.12)(sass@1.77.8))
+        version: 5.0.1(typescript@5.5.4)(vite@5.3.5(@types/node@20.17.3)(sass@1.77.8))
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -77,7 +77,7 @@ importers:
         version: 7.17.0(eslint@8.57.0)(typescript@5.5.4)
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.3.5(@types/node@20.14.12)(sass@1.77.8))
+        version: 4.3.1(vite@5.3.5(@types/node@20.17.3)(sass@1.77.8))
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -104,7 +104,7 @@ importers:
         version: 5.5.4
       vite:
         specifier: ^5.3.4
-        version: 5.3.5(@types/node@20.14.12)(sass@1.77.8)
+        version: 5.3.5(@types/node@20.17.3)(sass@1.77.8)
 
 packages:
 
@@ -598,6 +598,9 @@ packages:
   '@types/node@20.14.12':
     resolution: {integrity: sha512-r7wNXakLeSsGT0H1AU863vS2wa5wBOK4bWMjZz2wj+8nBx+m5PeIn0k8AloSLpRuiwdRQZwarZqHE4FNArPuJQ==}
 
+  '@types/node@20.17.3':
+    resolution: {integrity: sha512-tSQrmKKatLDGnG92h40GD7FzUt0MjahaHwOME4VAFeeA/Xopayq5qLyQRy7Jg/pjgKIFBXuKcGhJo+UdYG55jQ==}
+
   '@types/prop-types@15.7.12':
     resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
@@ -612,6 +615,9 @@ packages:
 
   '@types/stylis@4.2.5':
     resolution: {integrity: sha512-1Xve+NMN7FWjY14vLoY5tL3BVEQ/n42YLwaqJIPYhotZ9uBHt87VceMwWQpzmdEt2TNXIorIFG+YeCUUW7RInw==}
+
+  '@types/wicg-file-system-access@2020.9.8':
+    resolution: {integrity: sha512-ggMz8nOygG7d/stpH40WVaNvBwuyYLnrg5Mbyf6bmsj/8+gb6Ei4ZZ9/4PNpcPNTT8th9Q8sM8wYmWGjMWLX/A==}
 
   '@typescript-eslint/eslint-plugin@7.17.0':
     resolution: {integrity: sha512-pyiDhEuLM3PuANxH7uNYan1AaFs5XE0zw1hq69JBvGvE7gSuEoQl1ydtEe/XQeoC3GQxLXyOVa5kNOATgM638A==}
@@ -680,16 +686,19 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0
 
-  '@zenfs/core@0.16.2':
-    resolution: {integrity: sha512-vfVim9tcLGQb/taFgNvGfNeiPhW58WyZjzq2LD8GGXjqFqV+2zOXsHGSkvM3TsKueIvwrw+fWcyUJJbzpDi3UQ==}
+  '@xterm/xterm@5.5.0':
+    resolution: {integrity: sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==}
+
+  '@zenfs/core@1.2.1':
+    resolution: {integrity: sha512-gtjU1UXXK4nxEAafbaf43l/Ho3St+NVNpNShIyYMAbkWhD+piHwnBHo550b5gFD36m8RjmFzSqQw0VDGGd1cdg==}
     engines: {node: '>= 16'}
     hasBin: true
 
-  '@zenfs/dom@0.2.14':
-    resolution: {integrity: sha512-2HRjrCUE7GsrZrZX0PACdbY+REt2n/aOykjPj4NdaxdP9f8M8w98E/2V5sa0KjGzgyhzMEF5FjJd0begPx8xHw==}
+  '@zenfs/dom@1.0.2':
+    resolution: {integrity: sha512-ozJMf/U7xMw07Dol3LXg+bpCBEyhyr/bW5cbQCZSHIrXpIDZ9Euu3sMM9ydWj4rR6fJjzkpt/IZRUpRVLlfXjQ==}
     engines: {node: '>= 18'}
     peerDependencies:
-      '@zenfs/core': '>=0.12.10'
+      '@zenfs/core': ^1.2.0
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -952,6 +961,10 @@ packages:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
 
+  fake-indexeddb@6.0.0:
+    resolution: {integrity: sha512-YEboHE5VfopUclOck7LncgIqskAqnv4q0EWbYCaxKKjAvO93c+TJIaBuGy8CBFdbg9nKdpN3AuPRwVBJ4k7NrQ==}
+    engines: {node: '>=18'}
+
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -971,9 +984,17 @@ packages:
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
 
+  fetch-blob@3.2.0:
+    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
+    engines: {node: ^12.20 || >= 14.13}
+
   file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
     engines: {node: ^10.12.0 || >=12.0.0}
+
+  file-system-access@1.0.4:
+    resolution: {integrity: sha512-JDlhH+gJfZu/oExmtN4/6VX+q1etlrbJbR5uzoBa4BzfTRQbEXGFuGIBRk3ZcPocko3WdEclZSu+d/SByjG6Rg==}
+    engines: {node: '>=14'}
 
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
@@ -1198,6 +1219,10 @@ packages:
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+
+  node-domexception@1.0.0:
+    resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
+    engines: {node: '>=10.5.0'}
 
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
@@ -1494,6 +1519,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
+  undici-types@6.19.8:
+    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
+
   update-browserslist-db@1.1.0:
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
     hasBin: true
@@ -1503,8 +1531,8 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
-  utilium@0.4.4:
-    resolution: {integrity: sha512-TjhvLLoSi3WmzAR1QMFwGykW31cEOzbVoPqqopY6UYcm+5MfsF0ep3+DuJmAnOlU/zglGDwR96j0hjiHfwP4og==}
+  utilium@1.0.4:
+    resolution: {integrity: sha512-EGesAFASk3rUTA60heHpw9aspYzRbKe5+3+QO3bS/MoXdEZr0WbMI8SQ6PgI9aEXEUKiKdWnLv4zbArbAW8ohQ==}
 
   vite-tsconfig-paths@5.0.1:
     resolution: {integrity: sha512-yqwv+LstU7NwPeNqajZzLEBVpUFU6Dugtb2P84FXuvaoYA+/70l9MHE+GYfYAycVyPSDYZ7mjOFuYBRqlEpTig==}
@@ -1541,6 +1569,10 @@ packages:
         optional: true
       terser:
         optional: true
+
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+    engines: {node: '>= 8'}
 
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
@@ -2018,6 +2050,10 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
+  '@types/node@20.17.3':
+    dependencies:
+      undici-types: 6.19.8
+
   '@types/prop-types@15.7.12': {}
 
   '@types/react-dom@18.3.0':
@@ -2031,10 +2067,13 @@ snapshots:
 
   '@types/readable-stream@4.0.15':
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 20.17.3
       safe-buffer: 5.1.2
 
   '@types/stylis@4.2.5': {}
+
+  '@types/wicg-file-system-access@2020.9.8':
+    optional: true
 
   '@typescript-eslint/eslint-plugin@7.17.0(@typescript-eslint/parser@7.17.0(eslint@8.57.0)(typescript@5.5.4))(eslint@8.57.0)(typescript@5.5.4)':
     dependencies:
@@ -2119,30 +2158,36 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.3.5(@types/node@20.14.12)(sass@1.77.8))':
+  '@vitejs/plugin-react@4.3.1(vite@5.3.5(@types/node@20.17.3)(sass@1.77.8))':
     dependencies:
       '@babel/core': 7.24.9
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.24.9)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.24.9)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.3.5(@types/node@20.14.12)(sass@1.77.8)
+      vite: 5.3.5(@types/node@20.17.3)(sass@1.77.8)
     transitivePeerDependencies:
       - supports-color
 
-  '@zenfs/core@0.16.2':
+  '@xterm/xterm@5.5.0':
+    optional: true
+
+  '@zenfs/core@1.2.1':
     dependencies:
-      '@types/node': 20.14.12
+      '@types/node': 20.17.3
       '@types/readable-stream': 4.0.15
       buffer: 6.0.3
       eventemitter3: 5.0.1
       minimatch: 9.0.5
       readable-stream: 4.5.2
-      utilium: 0.4.4
+      utilium: 1.0.4
 
-  '@zenfs/dom@0.2.14(@zenfs/core@0.16.2)':
+  '@zenfs/dom@1.0.2(@zenfs/core@1.2.1)':
     dependencies:
-      '@zenfs/core': 0.16.2
+      '@zenfs/core': 1.2.1
+    optionalDependencies:
+      fake-indexeddb: 6.0.0
+      file-system-access: 1.0.4
 
   abort-controller@3.0.0:
     dependencies:
@@ -2444,6 +2489,9 @@ snapshots:
 
   events@3.3.0: {}
 
+  fake-indexeddb@6.0.0:
+    optional: true
+
   fast-deep-equal@3.1.3: {}
 
   fast-diff@1.3.0: {}
@@ -2464,9 +2512,24 @@ snapshots:
     dependencies:
       reusify: 1.0.4
 
+  fetch-blob@3.2.0:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.3.3
+    optional: true
+
   file-entry-cache@6.0.1:
     dependencies:
       flat-cache: 3.2.0
+
+  file-system-access@1.0.4:
+    dependencies:
+      '@types/wicg-file-system-access': 2020.9.8
+      fetch-blob: 3.2.0
+      node-domexception: 1.0.0
+    optionalDependencies:
+      web-streams-polyfill: 3.3.3
+    optional: true
 
   fill-range@7.1.1:
     dependencies:
@@ -2674,6 +2737,9 @@ snapshots:
   nanoid@3.3.7: {}
 
   natural-compare@1.4.0: {}
+
+  node-domexception@1.0.0:
+    optional: true
 
   node-releases@2.0.18: {}
 
@@ -2947,6 +3013,8 @@ snapshots:
 
   undici-types@5.26.5: {}
 
+  undici-types@6.19.8: {}
+
   update-browserslist-db@1.1.0(browserslist@4.23.2):
     dependencies:
       browserslist: 4.23.2
@@ -2957,30 +3025,35 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  utilium@0.4.4:
+  utilium@1.0.4:
     dependencies:
       eventemitter3: 5.0.1
+    optionalDependencies:
+      '@xterm/xterm': 5.5.0
 
-  vite-tsconfig-paths@5.0.1(typescript@5.5.4)(vite@5.3.5(@types/node@20.14.12)(sass@1.77.8)):
+  vite-tsconfig-paths@5.0.1(typescript@5.5.4)(vite@5.3.5(@types/node@20.17.3)(sass@1.77.8)):
     dependencies:
       debug: 4.3.6
       globrex: 0.1.2
       tsconfck: 3.1.3(typescript@5.5.4)
     optionalDependencies:
-      vite: 5.3.5(@types/node@20.14.12)(sass@1.77.8)
+      vite: 5.3.5(@types/node@20.17.3)(sass@1.77.8)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.3.5(@types/node@20.14.12)(sass@1.77.8):
+  vite@5.3.5(@types/node@20.17.3)(sass@1.77.8):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.40
       rollup: 4.19.1
     optionalDependencies:
-      '@types/node': 20.14.12
+      '@types/node': 20.17.3
       fsevents: 2.3.3
       sass: 1.77.8
+
+  web-streams-polyfill@3.3.3:
+    optional: true
 
   which@2.0.2:
     dependencies:
