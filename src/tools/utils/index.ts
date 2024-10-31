@@ -30,15 +30,3 @@ export const toDashedCase = (str: string) => {
 
 // Context Provider
 export { createContextProvider } from './create-context-provider'
-
-// FS
-export const rmdirRecursiveSync = (path: string) => {
-  for (const item of fs.readdirSync(path)) {
-    const itemPath = `${path}/${item}`
-    const stats = fs.statSync(itemPath)
-    if (stats.isDirectory()) {
-      rmdirRecursiveSync(itemPath)
-    } else fs.rmSync(itemPath)
-  }
-  fs.rmdirSync(`${path}`)
-}
