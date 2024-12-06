@@ -11,3 +11,7 @@ export const minMax = ({
   if (value > max) return max
   return value
 }
+
+export const toFixed = (value: number, decimals: number) => {
+  return Number(value.toFixed(decimals))
+}

@@ -9,17 +9,19 @@ import { Coordinates, Size } from '../../../../types'
 import { AnimationEngine } from '../../../../../../tools/utils/animation-engine'
 import { minMax } from '../../../../../../tools/utils/math'
 
+const ZOOM_STEP = 0.20
 const NAVIGATOR_CANVAS_SIZE: Size = {
   w: 198,
   h: 198
 }
 
 
+
 export const SpriteEditorNavigator: FC = () => {
   const { editorImage } = useSpriteEditorContext()
 
   const animation = useMemo(() => new AnimationEngine('ImageNavigator'), [])
-  const [navigatorCanvasContext, setNavigatorCanvasContext] = useState<CanvasRenderingContext2D | null>(null)
+  const [canvasContext, setCanvasContext] = useState<CanvasRenderingContext2D | null>(null)
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false)
   const navigatorCanvasZoom = useMemo<number>(() =>
     NAVIGATOR_CANVAS_SIZE.w / editorImage.width,
@@ -55,21 +57,30 @@ export const SpriteEditorNavigator: FC = () => {
   })
 
   const renderCanvas = async () => {
-    if (!navigatorCanvasContext) return
+    if (!canvasContext) return
     const imageData = new ImageData(editorImage.imageBuffer, editorImage.width, editorImage.height)
     const bitmap = await createImageBitmap(imageData)
-    navigatorCanvasContext.clearRect(0, 0, editorImage.width, editorImage.height)
-    navigatorCanvasContext.drawImage(bitmap, 0, 0)
+    canvasContext.clearRect(0, 0, editorImage.width, editorImage.height)
+    canvasContext.drawImage(bitmap, 0, 0)
 
-    navigatorCanvasContext.beginPath()
-    navigatorCanvasContext.strokeStyle = 'red'
-    navigatorCanvasContext.lineWidth = 1
-    navigatorCanvasContext.strokeRect(
+    canvasContext.beginPath()
+    canvasContext.strokeStyle = 'red'
+    canvasContext.fillStyle = 'red'
+    canvasContext.lineWidth = 1
+    canvasContext.strokeRect(
       editorImage.viewBox.position.x,
       editorImage.viewBox.position.y,
       editorImage.viewBox.size.w,
       editorImage.viewBox.size.h
     )
+    canvasContext.fillRect(
+      editorImage.viewBox.position.x + (editorImage.viewBox.size.w / 2) - 5,
+      editorImage.viewBox.position.y + (editorImage.viewBox.size.h / 2) - 5,
+      10,
+      10
+    )
+    canvasContext.closePath()
+
   }
 
 
@@ -103,27 +114,22 @@ export const SpriteEditorNavigator: FC = () => {
   const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newZoom = Number(e.target.value)
     editorImage.setZoom(newZoom)
+  }
 
-    const newViewBoxSize = {
-      w: Math.floor(editorImage.width / newZoom),
-      h: Math.floor(editorImage.height / newZoom),
-    }
-    const widthDiff = editorImage.viewBox.size.w - newViewBoxSize.w
-    const heightDiff = editorImage.viewBox.size.h - newViewBoxSize.h
-    updateViewBoxCoordinates(
-      {
-        x: editorImage.viewBox.position.x + Math.floor(widthDiff / 2),
-        y: editorImage.viewBox.position.y + Math.floor(heightDiff / 2),
-      }
-    )
+  const handleZoomIncrement = () => {
+    editorImage.setZoom(editorImage.zoom + ZOOM_STEP)
+  }
+
+  const handleDecrementZoom = () => {
+    editorImage.setZoom(editorImage.zoom - ZOOM_STEP)
   }
 
   useEffect(() => {
-    if (!navigatorCanvasContext) return
-    navigatorCanvasContext.resetTransform()
-    navigatorCanvasContext.scale(navigatorCanvasZoom, navigatorCanvasZoom)
+    if (!canvasContext) return
+    canvasContext.resetTransform()
+    canvasContext.scale(navigatorCanvasZoom, navigatorCanvasZoom)
     renderTick()
-  }, [navigatorCanvasContext])
+  }, [canvasContext])
 
   useEffect(() => {
     window.addEventListener('mouseup', setMouseUp)
@@ -138,20 +144,23 @@ export const SpriteEditorNavigator: FC = () => {
       <PersistentPixelatedCanvas
         width={NAVIGATOR_CANVAS_SIZE.w}
         height={NAVIGATOR_CANVAS_SIZE.h}
-        contextRef={setNavigatorCanvasContext}
+        contextRef={setCanvasContext}
         onMouseDown={setMouseDown}
         onMouseMove={handleMouseMove}
         onClick={handleOnClick}
       />
-      <input
-        type="range"
-        onChange={handleZoomChange}
-        min={1}
-        max={30}
-        step={.20}
-        value={editorImage.zoom}
-        className={styles.slider}
-      />
+      <div className={styles.controls}>
+        <button onClick={handleDecrementZoom}>-</button>
+        <input
+          type="range"
+          onChange={handleZoomChange}
+          min={1}
+          max={30}
+          step={ZOOM_STEP}
+          value={editorImage.zoom}
+        />
+        <button onClick={handleZoomIncrement}>+</button>
+      </div>
       w:{editorImage.viewBox.size.w}/ h:{editorImage.viewBox.size.w}
     </WidgetBox >
   </>

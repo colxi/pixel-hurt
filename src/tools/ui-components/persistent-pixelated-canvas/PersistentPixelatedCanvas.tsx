@@ -7,6 +7,7 @@ interface Props {
   contextRef: (a: CanvasRenderingContext2D | null) => void
   onMouseDown?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onMouseMove?: (e: React.MouseEvent<HTMLCanvasElement>) => void
+  onMouseOut?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onClick?: (e: React.MouseEvent<HTMLCanvasElement>) => void
 }
 
@@ -39,6 +40,10 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
     if (this.props.onMouseMove) this.props.onMouseMove(e)
   }
 
+  handleOnMouseOut = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    if (this.props.onMouseOut) this.props.onMouseOut(e)
+  }
+
 
   handleOnClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (this.props.onClick) this.props.onClick(e)
@@ -54,6 +59,7 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
         ref={this.handleRefPropagation}
         onMouseDown={this.handleOnMouseDown}
         onMouseMove={this.handleOnMouseMove}
+        onMouseOut={this.handleOnMouseOut}
         onClick={this.handleOnClick}
       />
     )

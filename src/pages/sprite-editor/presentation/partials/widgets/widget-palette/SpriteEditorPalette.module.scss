@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.item {
+  width: 20px;
+  height: 20px;
+}
+
+.addItem {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-content: center;
+  border: 1px solid white;
+}
+
+.dropDownItem {
+  display: flex;
+
+  .color {
+    width: 20px;
+    height: 10px;
+  }
+}
