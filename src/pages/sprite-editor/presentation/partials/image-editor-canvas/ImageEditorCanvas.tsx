@@ -11,7 +11,7 @@ export const ImageEditorCanvas: FC = () => {
           <ImageCanvas />
           <HudCanvas />
         </main>
-        {/* <div>Mouse:{editorTools.activeEditorTool} / {canvasMouseCoords.x}-{canvasMouseCoords.y}</div> */}
+        {/* <div>Mouse:{editorTools.activeToolName} / {canvasMouseCoords.x}-{canvasMouseCoords.y}</div> */}
       </div>
     </>
   )

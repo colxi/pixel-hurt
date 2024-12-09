@@ -1,6 +1,5 @@
 import type { FC } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { useSpriteEditorContext } from '../../../../context'
 import styles from './HudCanvas.module.scss'
 import { useSpriteEditorCanvasKeyBindings } from '../.././SpriteEditorCanvas.keyBindings'
 import { CanvasMouseEvent, getCanvasClickMouseCoords, getCanvasImageCoords } from '../../../utils'
@@ -8,18 +7,12 @@ import { AnimationEngine } from '../../../../../../tools/utils/animation-engine'
 import { Size } from '../../../../types'
 import { useEvent } from '@/tools/hooks'
 import { PersistentPixelatedCanvas } from '@/tools/ui-components/persistent-pixelated-canvas/PersistentPixelatedCanvas'
+import { ImageEditor } from '@/pages/sprite-editor/controller'
 
 export const HudCanvas: FC = () => {
-  const {
-    editorTools,
-    actionHistory,
-    editorImage,
-    canvasMouse
-  } = useSpriteEditorContext()
-
   useSpriteEditorCanvasKeyBindings({
-    undo: actionHistory.undo,
-    redo: actionHistory.redo
+    undo: ImageEditor.history.undo,
+    redo: ImageEditor.history.redo
   })
 
   const [isMOuseOverCanvas, setIsMOuseOverCanvas] = useState<boolean>(false)
@@ -34,18 +27,18 @@ export const HudCanvas: FC = () => {
   }
 
   const handleCanvasMouseMove = async (e: CanvasMouseEvent) => {
-    const { x, y } = getCanvasClickMouseCoords(e, editorImage.zoom)
+    const { x, y } = getCanvasClickMouseCoords(e, ImageEditor.image.zoom)
     setCanvasMouseCoords({ x, y })
     setIsMOuseOverCanvas(true)
-    editorTools.tool[editorTools.activeEditorTool].onMouseMove(e)
+    ImageEditor.tools.activeTool.onMouseMove(e)
 
-    canvasMouse.setLastMouseCoords({ x, y })
-    canvasMouse.setIsFirstActionTick(false)
+    ImageEditor.mouse.setMouseCoords({ x, y })
+    ImageEditor.mouse.setIsFirstActionTick(false)
   }
 
   const handleCanvasClick = async (e: CanvasMouseEvent) => {
-    canvasMouse.setMouseDown()
-    editorTools.tool[editorTools.activeEditorTool].onMouseDown(e)
+    ImageEditor.mouse.setMouseDown()
+    ImageEditor.tools.activeTool.onMouseDown(e)
   }
 
   const handleWheelGesture = useEvent((event: WheelEvent) => {
@@ -53,7 +46,7 @@ export const HudCanvas: FC = () => {
     const gestureType = event.ctrlKey ? 'zoom' : 'scroll'
     if (gestureType === 'zoom') {
       const zoomAmount = event.deltaY > 0 ? -0.2 : 0.2
-      const newZoom = editorImage.zoom + zoomAmount
+      const newZoom = ImageEditor.image.zoom + zoomAmount
       const coords = getCanvasImageCoords(
         {
           x: event.clientX,
@@ -61,11 +54,10 @@ export const HudCanvas: FC = () => {
         },
         canvasContext.canvas,
         newZoom,
-        editorImage.viewBox.position
+        ImageEditor.image.viewBox.position
       )
 
-      console.log(coords)
-      editorImage.setZoom(newZoom, coords)
+      ImageEditor.image.setZoom(newZoom, coords)
     }
   })
 
@@ -81,19 +73,19 @@ export const HudCanvas: FC = () => {
     canvasContext.clearRect(
       0,
       0,
-      viewportSize.w * editorImage.zoom,
-      viewportSize.h * editorImage.zoom
+      viewportSize.w * ImageEditor.image.zoom,
+      viewportSize.h * ImageEditor.image.zoom
     )
   }
 
   const renderCursor = () => {
     if (!canvasContext || !isMOuseOverCanvas) return
-    const cursorSize = Math.trunc(editorImage.zoom)
+    const cursorSize = Math.trunc(ImageEditor.image.zoom)
     canvasContext.strokeStyle = 'red'
     canvasContext.beginPath()
     canvasContext.strokeRect(
-      Math.trunc(canvasMouseCoords.x * editorImage.zoom),
-      Math.trunc(canvasMouseCoords.y * editorImage.zoom),
+      Math.trunc(canvasMouseCoords.x * ImageEditor.image.zoom),
+      Math.trunc(canvasMouseCoords.y * ImageEditor.image.zoom),
       cursorSize,
       cursorSize
     )
@@ -106,17 +98,22 @@ export const HudCanvas: FC = () => {
     animation.requestFrame(render)
   })
 
-  useEffect(render, [
-    editorImage.zoom,
-    actionHistory.currentIndex,
-    editorImage.viewBox.position
-  ])
 
   useEffect(() => {
-    window.addEventListener('mouseup', canvasMouse.setMouseUp)
+    window.addEventListener('mouseup', ImageEditor.mouse.setMouseUp)
+    ImageEditor.eventBus.subscribe([
+      ImageEditor.eventBus.Event.IMAGE_ZOOM_CHANGE,
+      ImageEditor.eventBus.Event.IMAGE_VIEW_BOX_POSITION_CHANGE,
+      ImageEditor.eventBus.Event.HISTORY_CHANGE,
+    ], render)
     return () => {
       animation.stop()
-      window.removeEventListener('mouseup', canvasMouse.setMouseUp)
+      ImageEditor.eventBus.unsubscribe([
+        ImageEditor.eventBus.Event.IMAGE_ZOOM_CHANGE,
+        ImageEditor.eventBus.Event.IMAGE_VIEW_BOX_POSITION_CHANGE,
+        ImageEditor.eventBus.Event.HISTORY_CHANGE,
+      ], render)
+      window.removeEventListener('mouseup', ImageEditor.mouse.setMouseUp)
       canvasContext?.canvas.removeEventListener('wheel', handleWheelGesture)
     }
   }, [])

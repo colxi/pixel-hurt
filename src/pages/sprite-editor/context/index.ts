@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { createContextProvider } from '../../../tools/utils'
 import { useActionHistory } from './action-history'
 import { useCanvasMouse } from './canvas-mouse'

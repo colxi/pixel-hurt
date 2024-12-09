@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useRef, useState, type FC } from 'react'
+import { useEffect, useMemo, useState, type FC } from 'react'
 import { WidgetBox } from '../../../../../../tools/ui-components/widget-box/WidgetBox'
-import { useSpriteEditorContext } from '../../../../context'
 import { CanvasMouseEvent, getCanvasClickMouseCoords } from '../../../utils'
 import styles from './SpriteEditorNavigator.module.css'
-import { useEvent } from '../../../../../../tools/hooks'
+import { useEvent, useForceUpdate } from '../../../../../../tools/hooks'
 import { PersistentPixelatedCanvas } from '../../../../../../tools/ui-components/persistent-pixelated-canvas/PersistentPixelatedCanvas'
 import { Coordinates, Size } from '../../../../types'
 import { AnimationEngine } from '../../../../../../tools/utils/animation-engine'
 import { minMax } from '../../../../../../tools/utils/math'
+import { ImageEditor } from '@/pages/sprite-editor/controller'
 
 const ZOOM_STEP = 0.20
 const NAVIGATOR_CANVAS_SIZE: Size = {
@@ -15,41 +15,27 @@ const NAVIGATOR_CANVAS_SIZE: Size = {
   h: 198
 }
 
-
-
 export const SpriteEditorNavigator: FC = () => {
-  const { editorImage } = useSpriteEditorContext()
-
+  const { forceUpdate } = useForceUpdate()
   const animation = useMemo(() => new AnimationEngine('ImageNavigator'), [])
   const [canvasContext, setCanvasContext] = useState<CanvasRenderingContext2D | null>(null)
   const [isMouseDown, setIsMouseDown] = useState<boolean>(false)
-  const navigatorCanvasZoom = useMemo<number>(() =>
-    NAVIGATOR_CANVAS_SIZE.w / editorImage.width,
-    [editorImage.width]
-  )
 
-
+  const navigatorCanvasZoom = NAVIGATOR_CANVAS_SIZE.w / ImageEditor.image.size.w
 
   const updateViewBoxCoordinates = (clickCoords: Coordinates) => {
     const x = Math.floor(minMax({
       value: clickCoords.x,
       min: 0,
-      max: editorImage.width - editorImage.viewBox.size.w
+      max: ImageEditor.image.size.w - ImageEditor.image.viewBox.size.w
     }))
     const y = Math.floor(minMax({
       value: clickCoords.y,
       min: 0,
-      max: editorImage.height - editorImage.viewBox.size.h
+      max: ImageEditor.image.size.h - ImageEditor.image.viewBox.size.h
     }))
-    editorImage.setViewBoxPosition({ x, y })
+    ImageEditor.image.setViewBoxPosition({ x, y })
   }
-
-  useEffect(() => {
-    updateViewBoxCoordinates({
-      x: editorImage.viewBox.position.x,
-      y: editorImage.viewBox.position.y
-    })
-  }, [editorImage.viewBox.size])
 
   const renderTick = useEvent(() => {
     renderCanvas()
@@ -58,9 +44,9 @@ export const SpriteEditorNavigator: FC = () => {
 
   const renderCanvas = async () => {
     if (!canvasContext) return
-    const imageData = new ImageData(editorImage.imageBuffer, editorImage.width, editorImage.height)
+    const imageData = new ImageData(ImageEditor.image.imageBuffer, ImageEditor.image.size.w, ImageEditor.image.size.h)
     const bitmap = await createImageBitmap(imageData)
-    canvasContext.clearRect(0, 0, editorImage.width, editorImage.height)
+    canvasContext.clearRect(0, 0, ImageEditor.image.size.w, ImageEditor.image.size.h)
     canvasContext.drawImage(bitmap, 0, 0)
 
     canvasContext.beginPath()
@@ -68,19 +54,18 @@ export const SpriteEditorNavigator: FC = () => {
     canvasContext.fillStyle = 'red'
     canvasContext.lineWidth = 1
     canvasContext.strokeRect(
-      editorImage.viewBox.position.x,
-      editorImage.viewBox.position.y,
-      editorImage.viewBox.size.w,
-      editorImage.viewBox.size.h
+      ImageEditor.image.viewBox.position.x,
+      ImageEditor.image.viewBox.position.y,
+      ImageEditor.image.viewBox.size.w,
+      ImageEditor.image.viewBox.size.h
     )
     canvasContext.fillRect(
-      editorImage.viewBox.position.x + (editorImage.viewBox.size.w / 2) - 5,
-      editorImage.viewBox.position.y + (editorImage.viewBox.size.h / 2) - 5,
+      ImageEditor.image.viewBox.position.x + (ImageEditor.image.viewBox.size.w / 2) - 5,
+      ImageEditor.image.viewBox.position.y + (ImageEditor.image.viewBox.size.h / 2) - 5,
       10,
       10
     )
     canvasContext.closePath()
-
   }
 
 
@@ -88,8 +73,8 @@ export const SpriteEditorNavigator: FC = () => {
     if (!isMouseDown) return
     const clickCoords = getCanvasClickMouseCoords(e, navigatorCanvasZoom)
     const effectiveCords = {
-      x: clickCoords.x - (editorImage.viewBox.size.w / 2),
-      y: clickCoords.y - (editorImage.viewBox.size.h / 2)
+      x: clickCoords.x - (ImageEditor.image.viewBox.size.w / 2),
+      y: clickCoords.y - (ImageEditor.image.viewBox.size.h / 2)
     }
     updateViewBoxCoordinates(effectiveCords)
   }
@@ -97,8 +82,8 @@ export const SpriteEditorNavigator: FC = () => {
   const handleOnClick = (e: CanvasMouseEvent) => {
     const clickCoords = getCanvasClickMouseCoords(e, navigatorCanvasZoom)
     const effectiveCords = {
-      x: clickCoords.x - (editorImage.viewBox.size.w / 2),
-      y: clickCoords.y - (editorImage.viewBox.size.h / 2)
+      x: clickCoords.x - (ImageEditor.image.viewBox.size.w / 2),
+      y: clickCoords.y - (ImageEditor.image.viewBox.size.h / 2)
     }
     updateViewBoxCoordinates(effectiveCords)
   }
@@ -113,15 +98,15 @@ export const SpriteEditorNavigator: FC = () => {
 
   const handleZoomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newZoom = Number(e.target.value)
-    editorImage.setZoom(newZoom)
+    ImageEditor.image.setZoom(newZoom)
   }
 
   const handleZoomIncrement = () => {
-    editorImage.setZoom(editorImage.zoom + ZOOM_STEP)
+    ImageEditor.image.setZoom(ImageEditor.image.zoom + ZOOM_STEP)
   }
 
   const handleDecrementZoom = () => {
-    editorImage.setZoom(editorImage.zoom - ZOOM_STEP)
+    ImageEditor.image.setZoom(ImageEditor.image.zoom - ZOOM_STEP)
   }
 
   useEffect(() => {
@@ -131,16 +116,19 @@ export const SpriteEditorNavigator: FC = () => {
     renderTick()
   }, [canvasContext])
 
+
   useEffect(() => {
+    ImageEditor.eventBus.subscribe(ImageEditor.eventBus.Event.IMAGE_ZOOM_CHANGE, forceUpdate)
     window.addEventListener('mouseup', setMouseUp)
     return () => {
+      ImageEditor.eventBus.unsubscribe(ImageEditor.eventBus.Event.IMAGE_ZOOM_CHANGE, forceUpdate)
       window.removeEventListener('mouseup', setMouseUp)
       animation.stop()
     }
   }, [])
 
   return <>
-    <WidgetBox title={`Navigator (${editorImage.zoom})`}>
+    <WidgetBox title={`Navigator (${ImageEditor.image.zoom})`}>
       <PersistentPixelatedCanvas
         width={NAVIGATOR_CANVAS_SIZE.w}
         height={NAVIGATOR_CANVAS_SIZE.h}
@@ -157,11 +145,11 @@ export const SpriteEditorNavigator: FC = () => {
           min={1}
           max={30}
           step={ZOOM_STEP}
-          value={editorImage.zoom}
+          value={ImageEditor.image.zoom}
         />
         <button onClick={handleZoomIncrement}>+</button>
       </div>
-      w:{editorImage.viewBox.size.w}/ h:{editorImage.viewBox.size.w}
+      w:{ImageEditor.image.viewBox.size.w}/ h:{ImageEditor.image.viewBox.size.w}
     </WidgetBox >
   </>
 }

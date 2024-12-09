@@ -1,0 +1,10 @@
+.toolsButton {
+  border-bottom: 1px solid #bf4f74;
+  height: 50px;
+  display: grid;
+  place-content: center;
+
+  &[data-active='true'] {
+    color: #bf4f74;
+  }
+}

@@ -1,22 +1,16 @@
 import type { FC } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { useSpriteEditorContext } from '../../../../context'
 import styles from './ImageCanvas.module.scss'
 import { Size } from '../../../../types'
 import { PersistentPixelatedCanvas } from '@/tools/ui-components/persistent-pixelated-canvas/PersistentPixelatedCanvas'
 import { AnimationEngine } from '@/tools/utils/animation-engine'
 import { useEvent } from '@/tools/hooks'
+import { ImageEditor } from '@/pages/sprite-editor/controller'
 
 export const ImageCanvas: FC = () => {
-  const {
-    actionHistory,
-    editorImage,
-  } = useSpriteEditorContext()
-
   const [viewportSize] = useState<Size>({ w: 500, h: 500 })
   const [imageCanvasContext, setImageCanvasContext] = useState<CanvasRenderingContext2D | null>()
   const animation = useMemo(() => new AnimationEngine('ImageCanvas'), [])
-
 
   const renderCanvas = async () => {
     if (!imageCanvasContext) return
@@ -28,49 +22,49 @@ export const ImageCanvas: FC = () => {
       0,
       viewportSize.w,
       viewportSize.h
-      // viewportSize.w / editorImage.zoom,
-      // viewportSize.h / editorImage.zoom
+      // viewportSize.w / image.zoom,
+      // viewportSize.h / image.zoom
     )
     // imageCanvasContext.fill()
 
     // clear the part of the canvas that has data in the buffer.
     // Coordinates that are before or after the actual viewport are not cleared
     imageCanvasContext.clearRect(
-      editorImage.viewBox.position.x > 0 ? 0 : Math.abs(editorImage.viewBox.position.x),
-      editorImage.viewBox.position.y > 0 ? 0 : Math.abs(editorImage.viewBox.position.y),
-      editorImage.viewBox.size.w + editorImage.viewBox.position.x > viewportSize.w
-        ? viewportSize.w - (editorImage.viewBox.position.x + editorImage.viewBox.size.w - viewportSize.w)
+      ImageEditor.image.viewBox.position.x > 0 ? 0 : Math.abs(ImageEditor.image.viewBox.position.x),
+      ImageEditor.image.viewBox.position.y > 0 ? 0 : Math.abs(ImageEditor.image.viewBox.position.y),
+      ImageEditor.image.viewBox.size.w + ImageEditor.image.viewBox.position.x > viewportSize.w
+        ? viewportSize.w - (ImageEditor.image.viewBox.position.x + ImageEditor.image.viewBox.size.w - viewportSize.w)
         : viewportSize.w,
-      editorImage.viewBox.size.h + editorImage.viewBox.position.y > viewportSize.h
-        ? viewportSize.h - (editorImage.viewBox.position.y + editorImage.viewBox.size.h - viewportSize.h)
+      ImageEditor.image.viewBox.size.h + ImageEditor.image.viewBox.position.y > viewportSize.h
+        ? viewportSize.h - (ImageEditor.image.viewBox.position.y + ImageEditor.image.viewBox.size.h - viewportSize.h)
         : viewportSize.h,
     )
 
     // old
     // imageCanvasContext.clearRect(
-    //   editorImage.viewBox.position.x > 0 ? 0 : Math.abs(editorImage.viewBox.position.x),
-    //   editorImage.viewBox.position.y > 0 ? 0 : Math.abs(editorImage.viewBox.position.y),
-    //   editorImage.viewBox.size.w + editorImage.viewBox.position.x > viewportSize.w
-    //     ? (viewportSize.w / editorImage.zoom) - (editorImage.viewBox.position.x + editorImage.viewBox.size.w - viewportSize.w)
-    //     : viewportSize.w / editorImage.zoom,
-    //   editorImage.viewBox.size.h + editorImage.viewBox.position.y > viewportSize.h
-    //     ? (viewportSize.h / editorImage.zoom) - (editorImage.viewBox.position.y + editorImage.viewBox.size.h - viewportSize.h)
-    //     : viewportSize.h / editorImage.zoom,
+    //   image.viewBox.position.x > 0 ? 0 : Math.abs(image.viewBox.position.x),
+    //   image.viewBox.position.y > 0 ? 0 : Math.abs(image.viewBox.position.y),
+    //   image.viewBox.size.w + image.viewBox.position.x > viewportSize.w
+    //     ? (viewportSize.w / image.zoom) - (image.viewBox.position.x + image.viewBox.size.w - viewportSize.w)
+    //     : viewportSize.w / image.zoom,
+    //   image.viewBox.size.h + image.viewBox.position.y > viewportSize.h
+    //     ? (viewportSize.h / image.zoom) - (image.viewBox.position.y + image.viewBox.size.h - viewportSize.h)
+    //     : viewportSize.h / image.zoom,
     // )
 
 
     // copy the image fom the buffer to the canvas
     const imageData = new ImageData(
-      editorImage.imageBuffer,
-      editorImage.width,
-      editorImage.height
+      ImageEditor.image.imageBuffer,
+      ImageEditor.image.size.w,
+      ImageEditor.image.size.h
     )
     const bitmap = await createImageBitmap(
       imageData,
-      editorImage.viewBox.position.x,
-      editorImage.viewBox.position.y,
-      editorImage.width,
-      editorImage.height,
+      ImageEditor.image.viewBox.position.x,
+      ImageEditor.image.viewBox.position.y,
+      ImageEditor.image.size.w,
+      ImageEditor.image.size.h,
     )
     imageCanvasContext.drawImage(bitmap, 0, 0)
   }
@@ -83,23 +77,31 @@ export const ImageCanvas: FC = () => {
   const setCanvasZoom = useEvent(() => {
     if (!imageCanvasContext) return
     imageCanvasContext.resetTransform()
-    imageCanvasContext.scale(editorImage.zoom, editorImage.zoom)
+    imageCanvasContext.scale(ImageEditor.image.zoom, ImageEditor.image.zoom)
   })
 
-  useEffect(() => {
+  const updateCanvas = useEvent(() => {
     if (!imageCanvasContext) return
     setCanvasZoom()
     animationTick()
-  }, [
-    imageCanvasContext,
-    editorImage.zoom,
-    actionHistory.currentIndex,
-    editorImage.viewBox.position
-  ])
+  })
+
+  useEffect(updateCanvas, [imageCanvasContext])
 
   useEffect(() => {
-    actionHistory.register('Create')
+    ImageEditor.history.register('Create')
+    ImageEditor.eventBus.subscribe([
+      ImageEditor.eventBus.Event.IMAGE_ZOOM_CHANGE,
+      ImageEditor.eventBus.Event.IMAGE_VIEW_BOX_POSITION_CHANGE,
+      ImageEditor.eventBus.Event.HISTORY_CHANGE,
+    ], updateCanvas)
+
     return () => {
+      ImageEditor.eventBus.unsubscribe([
+        ImageEditor.eventBus.Event.IMAGE_ZOOM_CHANGE,
+        ImageEditor.eventBus.Event.IMAGE_VIEW_BOX_POSITION_CHANGE,
+        ImageEditor.eventBus.Event.HISTORY_CHANGE,
+      ], updateCanvas)
       animation.stop()
     }
   }, [])

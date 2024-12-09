@@ -7,7 +7,69 @@ export interface SpriteEditorHistoryEntry {
   data: Uint8ClampedArray
 }
 
-export type ActionHistory = ReturnType<typeof useActionHistory>
+interface Options {
+  onAdd: (action: string) => SpriteEditorHistoryEntry
+  onChange: (entry: SpriteEditorHistoryEntry) => void
+}
+
+export class ActionHistory {
+  constructor(options: Options) {
+    this.#onAdd = options.onAdd
+    this.#onChange = options.onChange
+  }
+
+  #currentIndex = 0
+  #entries: SpriteEditorHistoryEntry[] = []
+  #onChange: Options['onChange']
+  #onAdd: Options['onAdd']
+
+  public get currentIndex() {
+    return this.#currentIndex
+  }
+
+  public get entries() {
+    return this.#entries
+  }
+
+  private addEntry(entry: SpriteEditorHistoryEntry) {
+    const isFirstItem = !this.#currentIndex && !this.#entries.length
+    if (isFirstItem) this.#entries.push(entry)
+    else {
+      const newIndex = this.#currentIndex + 1
+      this.#entries[newIndex] = entry
+      const tail = this.#entries.length - 1 - newIndex
+      if (tail) this.#entries.splice(-tail)
+      this.#currentIndex = newIndex
+    }
+  }
+
+  public undo() {
+    const newIndex = this.#currentIndex - 1
+    if (!this.#entries.length || !this.#currentIndex) return
+    this.#currentIndex = newIndex
+    this.#onChange(this.#entries[newIndex])
+  }
+
+  public redo() {
+    const newIndex = this.#currentIndex + 1
+    if (!this.#entries.length || newIndex > this.#entries.length - 1) return
+    this.#currentIndex = newIndex
+    this.#onChange(this.#entries[newIndex])
+  }
+
+  public load(index: number) {
+    if (!this.#entries.length || index > this.#entries.length - 1) return
+    this.#currentIndex = index
+    this.#onChange(this.#entries[index])
+  }
+
+  public register = debounce((action: string) => {
+    const data = this.#onAdd(action)
+    this.addEntry(data)
+  }, 200)
+}
+
+export type UseActionHistory = ReturnType<typeof useActionHistory>
 
 interface Options {
   onAdd: (action: string) => SpriteEditorHistoryEntry

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSpriteEditorContext } from '../../context'
+import { ImageEditor } from '../../controller'
 import { useEvent } from '../../../../tools/hooks'
 import { SpriteEditorTool } from '../../types'
 
@@ -11,7 +11,6 @@ interface UseSpriteEditorCanvasKeyBindings {
 export const useSpriteEditorCanvasKeyBindings = (
   handlers: UseSpriteEditorCanvasKeyBindings
 ) => {
-  const { editorTools } = useSpriteEditorContext()
   const [lastTool, setLastTool] = useState(SpriteEditorTool.BRUSH)
 
   const handleKeyDown = useEvent(async (e: KeyboardEvent) => {
@@ -19,12 +18,13 @@ export const useSpriteEditorCanvasKeyBindings = (
     if (e.code === 'KeyR' && e.metaKey) return
     else e.preventDefault()
 
-    if (e.code === 'KeyZ' && e.metaKey && e.shiftKey) await handlers.redo()
-    else if (e.code === 'KeyZ' && e.metaKey) await handlers.undo()
+    if (e.code === 'KeyZ' && e.metaKey && e.shiftKey) {
+      await handlers.redo()
+    } else if (e.code === 'KeyZ' && e.metaKey) await handlers.undo()
     else if (e.code === 'Space' && !e.metaKey) {
-      if (editorTools.activeEditorTool !== SpriteEditorTool.HAND) {
-        setLastTool(editorTools.activeEditorTool)
-        editorTools.setActiveEditorTool(SpriteEditorTool.HAND)
+      if (ImageEditor.tools.activeToolName !== SpriteEditorTool.HAND) {
+        setLastTool(ImageEditor.tools.activeToolName)
+        ImageEditor.tools.setActiveToolName(SpriteEditorTool.HAND)
       }
     }
   })
@@ -33,7 +33,7 @@ export const useSpriteEditorCanvasKeyBindings = (
     e.preventDefault()
 
     if (e.code === 'Space' && !e.metaKey) {
-      editorTools.setActiveEditorTool(lastTool)
+      ImageEditor.tools.setActiveToolName(lastTool)
     }
   })
 

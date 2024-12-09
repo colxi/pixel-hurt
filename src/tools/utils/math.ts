@@ -15,3 +15,7 @@ export const minMax = ({
 export const toFixed = (value: number, decimals: number) => {
   return Number(value.toFixed(decimals))
 }
+
+export const isEven = (n: number): boolean => {
+  return n % 2 == 0
+}

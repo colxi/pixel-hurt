@@ -8,13 +8,11 @@ export const ColorPicker = () => {
 
   const onContextUpdate = (ctx: CanvasRenderingContext2D | null) => {
     if (!ctx) return
-    console.log('123', ctx)
     setContext(ctx)
     createPalette(ctx)
   }
 
   const createPalette = (context: CanvasRenderingContext2D) => {
-    console.log('111')
     const { width, height } = context.canvas
     var gradient = context.createLinearGradient(0, 0, width, 0)
     // Create color gradient

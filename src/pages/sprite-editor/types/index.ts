@@ -22,3 +22,8 @@ export interface Size {
   w: number
   h: number
 }
+
+export interface Box {
+  position: Coordinates
+  size: Size
+}

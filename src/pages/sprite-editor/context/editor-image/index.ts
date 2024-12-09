@@ -1,14 +1,76 @@
 import { useMemo, useState } from 'react'
-import { Coordinates, Size } from '../../types'
-import { size } from 'lodash-es'
-import { useEvent } from '@/tools/hooks'
-import { minMax, toFixed } from '@/tools/utils/math'
+import { Box, Coordinates, Size } from '../../types'
+import { minMax, toFixed, isEven } from '@/tools/utils/math'
+import { DeepReadonly } from '@/types'
+import { getBoxCenter } from '@/tools/utils/geometry'
 
-export type EditorImage = ReturnType<typeof useEditorImage>
+export type UseEditorImage = ReturnType<typeof useEditorImage>
 
 const BYTES_PER_PIXEL = 4
 const INITIAL_ZOOM = 10
 const ZOOM_DECIMALS_RESOLUTION = 2
+
+export class EditorImage {
+  #width: number = 500
+  #height: number = 500
+  #zoom: number = INITIAL_ZOOM
+  #viewBoxPosition: Coordinates = { x: 0, y: 0 }
+  #imageBuffer = new Uint8ClampedArray(
+    new ArrayBuffer(this.#width * this.#height * BYTES_PER_PIXEL)
+  )
+
+  public get viewBox(): DeepReadonly<Box> {
+    const boxWidth = Math.floor(this.#width / this.#zoom)
+    const boxHeight = Math.floor(this.#height / this.#zoom)
+    return {
+      position: this.#viewBoxPosition,
+      size: {
+        w: isEven(boxWidth) ? boxWidth - 1 : boxWidth,
+        h: isEven(boxHeight) ? boxHeight - 1 : boxHeight,
+      },
+    }
+  }
+
+  public get width() {
+    return this.#width
+  }
+
+  public get height() {
+    return this.#height
+  }
+
+  public get zoom() {
+    return this.#zoom
+  }
+
+  public get imageBuffer(): Uint8ClampedArray {
+    return this.#imageBuffer
+  }
+
+  public setViewBoxPosition(coords: Coordinates) {
+    this.#viewBoxPosition.x = coords.x
+    this.#viewBoxPosition.y = coords.y
+  }
+
+  public setZoom(zoomLevel: number, zoomAt?: Coordinates): void {
+    const zoomNew = toFixed(
+      minMax({ value: zoomLevel, min: 1, max: 30 }),
+      ZOOM_DECIMALS_RESOLUTION
+    )
+
+    const viewBox = this.viewBox
+    const viewBoxCenter = getBoxCenter(viewBox)
+    let zoomAtX = zoomAt ? zoomAt.x : viewBoxCenter.x
+    let zoomAtY = zoomAt ? zoomAt.y : viewBoxCenter.y
+    const viewBoxPositionNew = {
+      x: viewBox.position.x + zoomAtX / this.#zoom - zoomAtX / zoomNew,
+      y: viewBox.position.y + zoomAtY / this.#zoom - zoomAtY / zoomNew,
+    }
+
+    this.setViewBoxPosition(viewBoxPositionNew)
+    this.#zoom = zoomNew
+  }
+}
 
 export const useEditorImage = () => {
   const [width] = useState(500)
@@ -38,10 +100,6 @@ export const useEditorImage = () => {
     x: Math.ceil(position.x + size.w / 2),
     y: Math.ceil(position.y + size.h / 2),
   })
-
-  function isEven(n: number) {
-    return n % 2 == 0
-  }
 
   const setZoom = (zoomLevel: number, zoomAt?: Coordinates) => {
     const zoomNew = toFixed(

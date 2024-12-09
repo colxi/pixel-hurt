@@ -18,3 +18,12 @@ export const useLocalContext = <T extends Record<string, any>>(data: T): T => {
   for (const key in data) ctx[key] = data[key]
   return ctx
 }
+
+export const useForceUpdate = () => {
+  const [value, setValue] = useState(0)
+  const forceUpdate = useEvent(() => {
+    const newValue = value > 1000 ? 0 : value + 1
+    setValue(newValue)
+  })
+  return { forceUpdate }
+}
