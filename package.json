@@ -17,7 +17,6 @@
     "@monaco-editor/react": "^4.6.0",
     "@zenfs/core": "^0.16.2",
     "@zenfs/dom": "^0.2.14",
-    "classnames": "^2.5.1",
     "lodash-es": "^4.17.21",
     "monaco-editor": "^0.50.0",
     "object-sizeof": "^2.6.5",
