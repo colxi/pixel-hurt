@@ -17,13 +17,13 @@ export const ColorPicker = () => {
     const { width, height } = context.canvas
     var gradient = context.createLinearGradient(0, 0, width, 0)
     // Create color gradient
-    gradient.addColorStop(0, "rgb(255,   0,   0)")
-    gradient.addColorStop(0.15, "rgb(255,   0, 255)")
-    gradient.addColorStop(0.33, "rgb(0,     0, 255)")
-    gradient.addColorStop(0.49, "rgb(0,   255, 255)")
-    gradient.addColorStop(0.67, "rgb(0,   255,   0)")
-    gradient.addColorStop(0.84, "rgb(255, 255,   0)")
-    gradient.addColorStop(1, "rgb(255,   0,   0)")
+    gradient.addColorStop(0, 'rgb(255,0,0)')
+    gradient.addColorStop(0.15, 'rgb(255,0,255)')
+    gradient.addColorStop(0.33, 'rgb(0,0,255)')
+    gradient.addColorStop(0.49, 'rgb(0,255,255)')
+    gradient.addColorStop(0.67, 'rgb(0,255,0)')
+    gradient.addColorStop(0.84, 'rgb(255,255,0)')
+    gradient.addColorStop(1, 'rgb(255,0,0)')
 
     // Apply gradient to canvas
     context.fillStyle = gradient
@@ -31,10 +31,10 @@ export const ColorPicker = () => {
 
     // Create semi transparent gradient (white -> trans. -> black)
     gradient = context.createLinearGradient(0, 0, 0, height)
-    gradient.addColorStop(0, "rgba(255, 255, 255, 1)")
-    gradient.addColorStop(0.5, "rgba(255, 255, 255, 0)")
-    gradient.addColorStop(0.5, "rgba(0,     0,   0, 0)")
-    gradient.addColorStop(1, "rgba(0,     0,   0, 1)")
+    gradient.addColorStop(0, 'rgba(255,255,255,1)')
+    gradient.addColorStop(0.5, 'rgba(255,255,255,0)')
+    gradient.addColorStop(0.5, 'rgba(0,0,0, 0)')
+    gradient.addColorStop(1, 'rgba(0,0,0, 1)')
 
     // Apply gradient to canvas
     context.fillStyle = gradient
