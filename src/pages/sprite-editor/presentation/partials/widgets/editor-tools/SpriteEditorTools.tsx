@@ -5,12 +5,13 @@ import {
   BrushIcon,
   EraserIcon,
   HandIcon,
-  MagnifyingGlassIcon
+  MagnifyingGlassIcon,
+  EyeDropperIcon
 } from '@/tools/ui-components/icons'
 import { ImageEditor } from '@/pages/sprite-editor/controller'
 import styles from './SpriteEditorTools.module.scss'
 import { useForceUpdate } from '@/tools/hooks'
-import { SpriteEditorTool } from '@/pages/sprite-editor/types'
+import { SpriteEditorTool } from '@/pages/sprite-editor/controller/editor-tools/types'
 
 export const SpriteEditorTools: FC = () => {
   const { forceUpdate } = useForceUpdate()
@@ -20,9 +21,17 @@ export const SpriteEditorTools: FC = () => {
   }
 
   useEffect(() => {
-    ImageEditor.eventBus.subscribe(ImageEditor.eventBus.Event.TOOL_CHANGE, forceUpdate)
+    ImageEditor.eventBus.subscribe([
+      ImageEditor.eventBus.Event.TOOL_CHANGE,
+      ImageEditor.eventBus.Event.PRIMARY_COLOR_CHANGE,
+      ImageEditor.eventBus.Event.SECONDARY_COLOR_CHANGE
+    ], forceUpdate)
     return () => {
-      ImageEditor.eventBus.unsubscribe(ImageEditor.eventBus.Event.TOOL_CHANGE, forceUpdate)
+      ImageEditor.eventBus.unsubscribe([
+        ImageEditor.eventBus.Event.TOOL_CHANGE,
+        ImageEditor.eventBus.Event.PRIMARY_COLOR_CHANGE,
+        ImageEditor.eventBus.Event.SECONDARY_COLOR_CHANGE
+      ], forceUpdate)
     }
   })
 
@@ -32,21 +41,28 @@ export const SpriteEditorTools: FC = () => {
         <div
           className={styles.toolsButton}
           data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.MOVE}
-          onClick={() => handleToolChange(SpriteEditorTool.MOVE)}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.MOVE)}
         >
           <CrossIcon />
         </div>
         <div
           className={styles.toolsButton}
+          data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.EYE_DROPPER}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.EYE_DROPPER)}
+        >
+          <EyeDropperIcon />
+        </div>
+        <div
+          className={styles.toolsButton}
           data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.BRUSH}
-          onClick={() => handleToolChange(SpriteEditorTool.BRUSH)}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.BRUSH)}
         >
           <BrushIcon />
         </div>
         <div
           className={styles.toolsButton}
           data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.ERASER}
-          onClick={() => handleToolChange(SpriteEditorTool.ERASER)}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.ERASER)}
         >
           <EraserIcon />
         </div
@@ -54,18 +70,28 @@ export const SpriteEditorTools: FC = () => {
         <div
           className={styles.toolsButton}
           data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.HAND}
-          onClick={() => handleToolChange(SpriteEditorTool.HAND)}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.HAND)}
         >
           <HandIcon />
         </div>
         <div
           className={styles.toolsButton}
           data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.ZOOM}
-          onClick={() => handleToolChange(SpriteEditorTool.ZOOM)}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.ZOOM)}
         >
           <MagnifyingGlassIcon />
         </div>
-      </WidgetBox>
+        <div>
+          <div className={styles.colors}>
+            <div className={styles.colorPrimary}>
+              <div className={styles.colorBox} style={{ backgroundColor: ImageEditor.color.primaryColor }}></div>
+            </div>
+            <div className={styles.colorSecondary}>
+              <div className={styles.colorBox} style={{ backgroundColor: ImageEditor.color.secondaryColor }}></div>
+            </div>
+          </div>
+        </div>
+      </WidgetBox >
     </>
   )
 }

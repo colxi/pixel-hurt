@@ -1,3 +1,5 @@
+import { EmptyObject } from '@/types'
+
 type EventDictionary = Record<PropertyKey, Record<PropertyKey, unknown>>
 
 type EventDictionaryWithEventName<EVENT_DICTIONARY> = {
@@ -27,9 +29,16 @@ export class EventBus<
    */
   public dispatch<T extends EVENT_NAME>(
     eventName: T,
-    data: EVENT_DICTIONARY_BASE[T]
+    data: EVENT_DICTIONARY_BASE[T] extends EmptyObject
+      ? EmptyObject
+      : EVENT_DICTIONARY_BASE[T]
   ) {
-    const event = new CustomEvent(eventName as string, { ...data, eventName })
+    const event = new CustomEvent(eventName as string, {
+      detail: {
+        ...data,
+        eventName,
+      },
+    })
     window.dispatchEvent(event)
   }
 

@@ -1,17 +1,11 @@
-export enum SpriteEditorTool {
-  MOVE = 'MOVE',
-  BRUSH = 'BRUSH',
-  ERASER = 'ERASER',
-  HAND = 'HAND',
-  ZOOM = 'ZOOM',
-}
-
-export type Color = {
+export type RgbaColor = {
   r: number
   g: number
   b: number
   a: number
 }
+
+export type HexColor = `#${string}`
 
 export interface Coordinates {
   x: number

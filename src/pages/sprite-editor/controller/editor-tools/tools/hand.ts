@@ -5,38 +5,43 @@ import {
 } from '../../../presentation/utils'
 import { CanvasMouse } from '../../canvas-mouse'
 import { EditorImage } from '../../editor-image'
-import { EditorTool } from './types/indx'
+import { EditorTool } from '../types'
+
+interface HandToolOptions {
+  image: EditorImage
+  mouse: CanvasMouse
+}
 
 export class HandTool implements EditorTool {
-  constructor(editorImage: EditorImage, canvasMouse: CanvasMouse) {
-    this.#editorImage = editorImage
-    this.#canvasMouse = canvasMouse
+  constructor({ image, mouse }: HandToolOptions) {
+    this.#image = image
+    this.#mouse = mouse
   }
 
-  #editorImage: EditorImage
-  #canvasMouse: CanvasMouse
+  #image: EditorImage
+  #mouse: CanvasMouse
   #lastMouseCoords: Coordinates = { x: 0, y: 0 }
+
+  public async onMouseMove(event: CanvasMouseEvent) {
+    if (!this.#mouse.isMouseDown) return
+    const coords = getCanvasClickMouseCoords(event, this.#image.zoom)
+    const xDiff = this.#lastMouseCoords.x - coords.x
+    const yDiff = this.#lastMouseCoords.y - coords.y
+    this.#image.setViewBoxPosition({
+      x: this.#image.viewBox.position.x + xDiff,
+      y: this.#image.viewBox.position.y + yDiff,
+    })
+    this.#lastMouseCoords = coords
+  }
+
+  public onMouseDown(event: CanvasMouseEvent) {
+    const coords = getCanvasClickMouseCoords(event, this.#image.zoom)
+    this.#lastMouseCoords = coords
+  }
 
   public enable = () => {}
 
   public disable = () => {}
 
-  public async onMouseMove(e: CanvasMouseEvent) {
-    if (!this.#canvasMouse.isMouseDown) return
-    const coords = getCanvasClickMouseCoords(e, this.#editorImage.zoom)
-    const xDiff = this.#lastMouseCoords.x - coords.x
-    const yDiff = this.#lastMouseCoords.y - coords.y
-    this.#editorImage.setViewBoxPosition({
-      x: this.#editorImage.viewBox.position.x + xDiff,
-      y: this.#editorImage.viewBox.position.y + yDiff,
-    })
-    this.#lastMouseCoords = coords
-  }
-
-  public onMouseDown(e: CanvasMouseEvent) {
-    const coords = getCanvasClickMouseCoords(e, this.#editorImage.zoom)
-    this.#lastMouseCoords = coords
-  }
-
-  public onMouseUp(_e: CanvasMouseEvent) {}
+  public onMouseUp(_event: CanvasMouseEvent) {}
 }

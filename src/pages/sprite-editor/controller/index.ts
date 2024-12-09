@@ -1,11 +1,13 @@
 import { EditorHistory } from './action-history'
 import { CanvasMouse } from './canvas-mouse'
+import { EditorColor } from './editor-color'
 import { EditorImage } from './editor-image'
 import { EditorTools } from './editor-tools'
 import { EditorEventBus } from './event-bus'
 
 export class ImageEditor {
   static eventBus = new EditorEventBus()
+  static color = new EditorColor({ eventBus: this.eventBus })
   static image = new EditorImage({ eventBus: this.eventBus })
   static mouse = new CanvasMouse()
   static history = new EditorHistory({
@@ -28,5 +30,6 @@ export class ImageEditor {
     mouse: this.mouse,
     history: this.history,
     eventBus: this.eventBus,
+    color: this.color,
   })
 }

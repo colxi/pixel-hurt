@@ -3,19 +3,17 @@ import { minMax, toFixed, isEven } from '@/tools/utils/math'
 import { DeepReadonly } from '@/types'
 import { getBoxCenter } from '@/tools/utils/geometry'
 import { EditorEventBus } from '../event-bus'
+import { EditorImageOptions } from './types'
 
 const BYTES_PER_PIXEL = 4
 const INITIAL_ZOOM = 10
 const ZOOM_DECIMALS_RESOLUTION = 2
 
-interface EditorImageOptions {
-  eventBus: EditorEventBus
-}
-
 export class EditorImage {
   constructor({ eventBus }: EditorImageOptions) {
     this.#eventBus = eventBus
   }
+
   #eventBus: EditorEventBus
   #size: Size = { w: 500, h: 500 }
   #zoom: number = INITIAL_ZOOM
