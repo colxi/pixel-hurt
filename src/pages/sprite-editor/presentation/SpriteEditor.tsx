@@ -1,4 +1,3 @@
-import { SpriteEditorContextProvider } from '../context'
 import { SpriteEditorTools } from './partials/widgets/editor-tools/SpriteEditorTools'
 import { SpriteEditorPalette } from './partials/widgets/widget-palette/SpriteEditorPalette'
 import { SpriteEditorHistory } from './partials/widgets/editor-history/SpriteEditorHistory'
@@ -10,18 +9,16 @@ import { ImageEditorCanvas } from './partials/image-editor-canvas/ImageEditorCan
 export const SpriteEditor = () => {
   return (
     <>
-      <SpriteEditorContextProvider >
-        <main className={styles.layout}>
-          <SpriteEditorTools />
-          <ImageEditorCanvas />
-          <aside className={styles.sidebar}>
-            <SpriteEditorInfo />
-            <SpriteEditorNavigator />
-            <SpriteEditorPalette />
-            <SpriteEditorHistory />
-          </aside>
-        </main>
-      </SpriteEditorContextProvider >
+      <main className={styles.layout}>
+        <SpriteEditorTools />
+        <ImageEditorCanvas />
+        <aside className={styles.sidebar}>
+          <SpriteEditorInfo />
+          <SpriteEditorNavigator />
+          <SpriteEditorPalette />
+          <SpriteEditorHistory />
+        </aside>
+      </main>
     </>
   )
 }
