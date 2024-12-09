@@ -34,3 +34,10 @@ export const getLinePoints = (
   }
   return data
 }
+
+export const isDistanceGreaterThanOne = (
+  start: Coordinates,
+  end: Coordinates
+) => {
+  return Math.abs(start.x - end.x) > 1 || Math.abs(start.y - end.y) > 1
+}

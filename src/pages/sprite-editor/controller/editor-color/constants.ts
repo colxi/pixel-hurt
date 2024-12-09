@@ -1,10 +1,6 @@
-interface Palette {
-  id: string
-  name: string
-  colors: `#${string}`[]
-}
+import { EditorPalette } from './types'
 
-export const palettes: Palette[] = [
+export const palettes: EditorPalette[] = [
   {
     id: '1',
     name: 'PixelHurt',

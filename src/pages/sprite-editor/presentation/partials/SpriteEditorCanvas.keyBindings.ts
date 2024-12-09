@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ImageEditor } from '../../controller'
 import { useEvent } from '../../../../tools/hooks'
-import { SpriteEditorTool } from '../../types'
 
 interface UseSpriteEditorCanvasKeyBindings {
   redo: () => void | Promise<void>
@@ -11,7 +10,7 @@ interface UseSpriteEditorCanvasKeyBindings {
 export const useSpriteEditorCanvasKeyBindings = (
   handlers: UseSpriteEditorCanvasKeyBindings
 ) => {
-  const [lastTool, setLastTool] = useState(SpriteEditorTool.BRUSH)
+  const [lastTool, setLastTool] = useState(ImageEditor.tools.Tool.BRUSH)
 
   const handleKeyDown = useEvent(async (e: KeyboardEvent) => {
     // allow page reload with metaKey+R, but disable the rest of browser shortcuts
@@ -22,9 +21,9 @@ export const useSpriteEditorCanvasKeyBindings = (
       await handlers.redo()
     } else if (e.code === 'KeyZ' && e.metaKey) await handlers.undo()
     else if (e.code === 'Space' && !e.metaKey) {
-      if (ImageEditor.tools.activeToolName !== SpriteEditorTool.HAND) {
+      if (ImageEditor.tools.activeToolName !== ImageEditor.tools.Tool.HAND) {
         setLastTool(ImageEditor.tools.activeToolName)
-        ImageEditor.tools.setActiveToolName(SpriteEditorTool.HAND)
+        ImageEditor.tools.setActiveToolName(ImageEditor.tools.Tool.HAND)
       }
     }
   })

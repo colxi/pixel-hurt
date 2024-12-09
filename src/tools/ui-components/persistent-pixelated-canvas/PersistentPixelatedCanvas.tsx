@@ -4,11 +4,13 @@ interface Props {
   width: number
   height: number
   className?: string
+  willReadFrequently?: boolean
   contextRef: (a: CanvasRenderingContext2D | null) => void
   onMouseDown?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onMouseMove?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onMouseOut?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onClick?: (e: React.MouseEvent<HTMLCanvasElement>) => void
+  onContextMenu?: (e: React.MouseEvent<HTMLCanvasElement>) => void
 }
 
 /**
@@ -18,7 +20,8 @@ interface Props {
  */
 export class PersistentPixelatedCanvas extends React.Component<Props> {
   static defaultProps = {
-    className: 'PersistentPixelatedCanvas'
+    className: 'PersistentPixelatedCanvas',
+    willReadFrequently: false
   };
 
   shouldComponentUpdate() {
@@ -27,7 +30,7 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
 
   handleRefPropagation = (canvas: HTMLCanvasElement) => {
     if (!canvas) return
-    const context = canvas.getContext('2d')
+    const context = canvas.getContext('2d', { willReadFrequently: this.props.willReadFrequently })
     context!.imageSmoothingEnabled = false
     this.props.contextRef(context || null)
   }
@@ -49,6 +52,10 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
     if (this.props.onClick) this.props.onClick(e)
   }
 
+  handleContextMenu = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+    if (this.props.onContextMenu) this.props.onContextMenu(e)
+  }
+
 
   render() {
     return (
@@ -61,6 +68,7 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
         onMouseMove={this.handleOnMouseMove}
         onMouseOut={this.handleOnMouseOut}
         onClick={this.handleOnClick}
+        onContextMenu={this.handleContextMenu}
       />
     )
   }

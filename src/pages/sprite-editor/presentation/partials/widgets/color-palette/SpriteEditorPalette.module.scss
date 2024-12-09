@@ -7,6 +7,10 @@
 .item {
   width: 20px;
   height: 20px;
+
+  &[data-active='true'] {
+    border: 1px solid #bf4f74;
+  }
 }
 
 .addItem {
