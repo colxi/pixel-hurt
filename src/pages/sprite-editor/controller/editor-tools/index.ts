@@ -9,6 +9,7 @@ import { EditorEventBus } from '../event-bus'
 import { EditorColor } from '../editor-color'
 import { EyeDropperTool } from './tools/eye-dropper'
 import { hasKeyModifiers } from '@/tools/utils/keyboard'
+import { PaintBucketTool } from './tools/paint-bucket'
 
 export class EditorTools {
   constructor({ image, mouse, history, eventBus, color }: EditorToolsOptions) {
@@ -53,6 +54,13 @@ export class EditorTools {
       [SpriteEditorTool.EYE_DROPPER]: new EyeDropperTool({
         color: this.#color,
         image: this.#image,
+        mouse: this.#mouse,
+      }),
+      [SpriteEditorTool.PAINT_BUCKET]: new PaintBucketTool({
+        color: this.#color,
+        image: this.#image,
+        mouse: this.#mouse,
+        history: this.#history,
       }),
       [SpriteEditorTool.HAND]: new HandTool({
         image: this.#image,
@@ -94,6 +102,11 @@ export class EditorTools {
       case 'KeyI': {
         if (hasKeyModifiers(e)) return
         this.setActiveToolName(SpriteEditorTool.EYE_DROPPER)
+        break
+      }
+      case 'KeyG': {
+        if (hasKeyModifiers(e)) return
+        this.setActiveToolName(SpriteEditorTool.PAINT_BUCKET)
         break
       }
     }

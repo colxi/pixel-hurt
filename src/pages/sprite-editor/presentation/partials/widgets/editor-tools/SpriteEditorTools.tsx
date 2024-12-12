@@ -6,7 +6,8 @@ import {
   EraserIcon,
   HandIcon,
   MagnifyingGlassIcon,
-  EyeDropperIcon
+  EyeDropperIcon,
+  FillDripIcon
 } from '@/tools/ui-components/icons'
 import { ImageEditor } from '@/pages/sprite-editor/controller'
 import styles from './SpriteEditorTools.module.scss'
@@ -58,6 +59,13 @@ export const SpriteEditorTools: FC = () => {
           onClick={() => handleToolChange(ImageEditor.tools.Tool.BRUSH)}
         >
           <BrushIcon />
+        </div>
+        <div
+          className={styles.toolsButton}
+          data-active={ImageEditor.tools.activeToolName === ImageEditor.tools.Tool.PAINT_BUCKET}
+          onClick={() => handleToolChange(ImageEditor.tools.Tool.PAINT_BUCKET)}
+        >
+          <FillDripIcon />
         </div>
         <div
           className={styles.toolsButton}
