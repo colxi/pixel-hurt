@@ -30,4 +30,5 @@ export enum SpriteEditorTool {
   HAND = 'HAND',
   ZOOM = 'ZOOM',
   EYE_DROPPER = 'EYE_DROPPER',
+  PAINT_BUCKET = 'PAINT_BUCKET',
 }

@@ -7,7 +7,8 @@ import {
   faEraser,
   faHand,
   faMagnifyingGlass,
-  faEyeDropper
+  faEyeDropper,
+  faFillDrip
 } from '@fortawesome/free-solid-svg-icons'
 
 export const CrossIcon = () => <FontAwesomeIcon icon={faArrowsUpDownLeftRight} />
@@ -16,3 +17,4 @@ export const EraserIcon = () => <FontAwesomeIcon icon={faEraser} />
 export const HandIcon = () => <FontAwesomeIcon icon={faHand} />
 export const MagnifyingGlassIcon = () => <FontAwesomeIcon icon={faMagnifyingGlass} />
 export const EyeDropperIcon = () => <FontAwesomeIcon icon={faEyeDropper} />
+export const FillDripIcon = () => <FontAwesomeIcon icon={faFillDrip} />

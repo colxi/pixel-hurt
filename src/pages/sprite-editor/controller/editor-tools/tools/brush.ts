@@ -13,6 +13,11 @@ import {
 } from '@/tools/utils/formatters'
 import { EditorTool } from '../types'
 import { hasKeyModifiers } from '@/tools/utils/keyboard'
+import {
+  getImageByteIndexFromCoordinates,
+  getColorFromCoordinates,
+  isTransparentColor,
+} from '@/tools/utils/image'
 
 interface BrushToolOptions {
   color: EditorColor
@@ -27,58 +32,52 @@ export class BrushTool implements EditorTool {
     this.#mouse = mouse
     this.#history = history
     this.#color = color
-    this.#isEyeDropEnabled = false
+    this.#isEyeDropperModeEnabled = false
   }
 
   #color: EditorColor
   #image: EditorImage
   #mouse: CanvasMouse
   #history: EditorHistory
-  #isEyeDropEnabled: boolean
+  #isEyeDropperModeEnabled: boolean
 
   private paintPixel(x: number, y: number) {
-    x = Math.floor(x)
-    y = Math.floor(y)
-    const imageWidth = this.#image.size.w
-    const byteOffset = y * imageWidth * 4 + x * 4
-
     // If eye-dropper mode is enabled, get the color instead of painting it
-    if (this.#isEyeDropEnabled) {
-      this.getColorFromPixel(byteOffset)
+    if (this.#isEyeDropperModeEnabled) {
+      this.setPixelColor(x, y)
       return
     }
 
+    const byteIndex = getImageByteIndexFromCoordinates(x, y, this.#image.size.w)
     const color = formatHexColorAsRgba(this.#color.primaryColor)
-    this.#image.imageBuffer[byteOffset + 0] = color.r // red
-    this.#image.imageBuffer[byteOffset + 1] = color.g // green
-    this.#image.imageBuffer[byteOffset + 2] = color.b // blue
-    this.#image.imageBuffer[byteOffset + 3] = color.a // alpha
+    this.#image.imageBuffer[byteIndex + 0] = color.r // red
+    this.#image.imageBuffer[byteIndex + 1] = color.g // green
+    this.#image.imageBuffer[byteIndex + 2] = color.b // blue
+    this.#image.imageBuffer[byteIndex + 3] = color.a // alpha
     this.#history.register('Draw')
   }
 
-  private getColorFromPixel(byteOffset: number) {
-    const color = {
-      r: this.#image.imageBuffer[byteOffset + 0],
-      g: this.#image.imageBuffer[byteOffset + 1],
-      b: this.#image.imageBuffer[byteOffset + 2],
-      a: this.#image.imageBuffer[byteOffset + 3],
-    }
-    // return if pixel is transparent (as user may have clicked on an unset background pixel)
-    if (color.a === 0) return
-
+  private setPixelColor(x: number, y: number) {
+    const color = getColorFromCoordinates(
+      x,
+      y,
+      this.#image.size.w,
+      this.#image.imageBuffer
+    )
+    if (isTransparentColor(color)) return
     const hexColor = formatRgbaColorAsHex(color)
     this.#color.setPrimaryColor(hexColor)
   }
 
   private onKeyDown = (e: KeyboardEvent) => {
     if (e.code === 'AltLeft' && !hasKeyModifiers(e)) {
-      this.#isEyeDropEnabled = true
+      this.#isEyeDropperModeEnabled = true
     }
   }
 
   private onKeyUp = (e: KeyboardEvent) => {
     if (e.code === 'AltLeft' && !hasKeyModifiers(e)) {
-      this.#isEyeDropEnabled = false
+      this.#isEyeDropperModeEnabled = false
     }
   }
 
