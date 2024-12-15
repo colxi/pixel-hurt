@@ -29,7 +29,7 @@ export class EyeDropperTool implements EditorTool {
   #image: EditorImage
   #mouse: CanvasMouse
 
-  private setPixelColor(x: number, y: number) {
+  private pickColorFromPixel(x: number, y: number) {
     const color = getColorFromCoordinates(
       x,
       y,
@@ -43,7 +43,7 @@ export class EyeDropperTool implements EditorTool {
 
   public onMouseDown(event: CanvasMouseEvent) {
     const clickCoords = getCanvasClickMouseCoords(event, this.#image.zoom)
-    this.setPixelColor(
+    this.pickColorFromPixel(
       clickCoords.x + this.#image.viewBox.position.x,
       clickCoords.y + this.#image.viewBox.position.y
     )
@@ -52,7 +52,7 @@ export class EyeDropperTool implements EditorTool {
   public onMouseMove(event: CanvasMouseEvent) {
     if (!this.#mouse.isMouseDown) return
     const clickCoords = getCanvasClickMouseCoords(event, this.#image.zoom)
-    this.setPixelColor(
+    this.pickColorFromPixel(
       clickCoords.x + this.#image.viewBox.position.x,
       clickCoords.y + this.#image.viewBox.position.y
     )

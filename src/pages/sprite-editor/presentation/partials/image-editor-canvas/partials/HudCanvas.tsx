@@ -3,11 +3,11 @@ import { useEffect, useMemo, useState } from 'react'
 import styles from './HudCanvas.module.scss'
 import { useSpriteEditorCanvasKeyBindings } from '../.././SpriteEditorCanvas.keyBindings'
 import { CanvasMouseEvent, getCanvasClickMouseCoords, getCanvasImageCoords } from '../../../utils'
-import { AnimationEngine } from '../../../../../../tools/utils/animation-engine'
+import { AnimationEngine } from '@/tools/utils/animation-engine'
 import { Size } from '../../../../types'
-import { useEvent } from '@/tools/hooks'
 import { PersistentPixelatedCanvas } from '@/tools/ui-components/persistent-pixelated-canvas/PersistentPixelatedCanvas'
 import { ImageEditor } from '@/pages/sprite-editor/controller'
+import { useEvent } from '@/tools/hooks'
 
 export const HudCanvas: FC = () => {
   useSpriteEditorCanvasKeyBindings({
@@ -41,30 +41,38 @@ export const HudCanvas: FC = () => {
     ImageEditor.tools.activeTool.onMouseDown(e)
   }
 
-  const handleWheelGesture = useEvent((event: WheelEvent) => {
+  const handleZoomGesture = (event: React.WheelEvent<HTMLCanvasElement>) => {
     if (!canvasContext) return
-    const gestureType = event.ctrlKey ? 'zoom' : 'scroll'
-    if (gestureType === 'zoom') {
-      const zoomAmount = event.deltaY > 0 ? -0.2 : 0.2
-      const newZoom = ImageEditor.image.zoom + zoomAmount
-      const coords = getCanvasImageCoords(
-        {
-          x: event.clientX,
-          y: event.clientY
-        },
-        canvasContext.canvas,
-        newZoom,
-        ImageEditor.image.viewBox.position
-      )
+    const zoomAmount = event.deltaY > 0 ? -0.2 : 0.2
+    const newZoom = ImageEditor.image.zoom + zoomAmount
+    const coords = getCanvasImageCoords(
+      {
+        x: event.clientX,
+        y: event.clientY
+      },
+      canvasContext.canvas,
+      newZoom,
+      ImageEditor.image.viewBox.position
+    )
 
-      ImageEditor.image.setZoom(newZoom, coords)
-    }
-  })
+    ImageEditor.image.setZoom(newZoom, coords)
+  }
+
+  const handleScrollGesture = (event: React.WheelEvent<HTMLCanvasElement>) => {
+    if (!canvasContext) return
+    ImageEditor.image.setViewBoxPosition({
+      x: ImageEditor.image.viewBox.position.x + (event.deltaX / ImageEditor.image.zoom),
+      y: ImageEditor.image.viewBox.position.y + (event.deltaY / ImageEditor.image.zoom)
+    })
+  }
+
+  const handleWheelGesture = (event: React.WheelEvent<HTMLCanvasElement>) => {
+    if (event.ctrlKey) handleZoomGesture(event)
+    else handleScrollGesture(event)
+  }
 
   const setContext = (context: CanvasRenderingContext2D | null) => {
     if (!context) return
-    context.canvas.removeEventListener('wheel', handleWheelGesture)
-    context.canvas.addEventListener('wheel', handleWheelGesture, { passive: false })
     setCanvasContext(context)
   }
 
@@ -76,6 +84,20 @@ export const HudCanvas: FC = () => {
       viewportSize.w * ImageEditor.image.zoom,
       viewportSize.h * ImageEditor.image.zoom
     )
+  }
+
+  const renderImageBorder = () => {
+    if (!canvasContext) return
+    canvasContext.beginPath()
+    canvasContext.strokeStyle = 'blue'
+    canvasContext.lineWidth = 1
+    canvasContext.strokeRect(
+      Math.floor((ImageEditor.image.viewBox.position.x - 1) * -1 * ImageEditor.image.zoom),
+      Math.floor((ImageEditor.image.viewBox.position.y - 1) * -1 * ImageEditor.image.zoom),
+      ImageEditor.image.size.w * ImageEditor.image.zoom,
+      ImageEditor.image.size.h * ImageEditor.image.zoom
+    )
+    canvasContext.closePath()
   }
 
   const renderCursor = () => {
@@ -94,6 +116,7 @@ export const HudCanvas: FC = () => {
 
   const render = useEvent(() => {
     clearCanvas()
+    renderImageBorder()
     renderCursor()
     animation.requestFrame(render)
   })
@@ -114,7 +137,6 @@ export const HudCanvas: FC = () => {
         ImageEditor.eventBus.Event.HISTORY_CHANGE,
       ], render)
       window.removeEventListener('mouseup', ImageEditor.mouse.setMouseUp)
-      canvasContext?.canvas.removeEventListener('wheel', handleWheelGesture)
     }
   }, [])
 
@@ -126,6 +148,7 @@ export const HudCanvas: FC = () => {
         onMouseMove={handleCanvasMouseMove}
         onMouseDown={handleCanvasClick}
         onMouseOut={handleOnMouseOut}
+        onWheel={handleWheelGesture}
         width={viewportSize.w}
         height={viewportSize.h}
       />

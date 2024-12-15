@@ -44,7 +44,7 @@ export class BrushTool implements EditorTool {
   private paintPixel(x: number, y: number) {
     // If eye-dropper mode is enabled, get the color instead of painting it
     if (this.#isEyeDropperModeEnabled) {
-      this.setPixelColor(x, y)
+      this.pickColorFromPixel(x, y)
       return
     }
 
@@ -57,7 +57,7 @@ export class BrushTool implements EditorTool {
     this.#history.register('Draw')
   }
 
-  private setPixelColor(x: number, y: number) {
+  private pickColorFromPixel(x: number, y: number) {
     const color = getColorFromCoordinates(
       x,
       y,
@@ -82,13 +82,11 @@ export class BrushTool implements EditorTool {
   }
 
   public enable = () => {
-    console.log('enable')
     window.addEventListener('keydown', this.onKeyDown)
     window.addEventListener('keyup', this.onKeyUp)
   }
 
   public disable = () => {
-    console.log('disable')
     window.removeEventListener('keydown', this.onKeyDown)
     window.removeEventListener('keyup', this.onKeyUp)
   }

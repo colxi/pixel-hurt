@@ -14,6 +14,8 @@ export const FPSMonitor: FC = () => {
     setFps(monitor.getFPS())
   })
 
+  const color = fps < 115 ? 'red' : 'green'
+
   useEffect(() => {
     const fpsMonitorInstance = new FramerateMonitor()
     fpsMonitorInstance.start()
@@ -23,9 +25,9 @@ export const FPSMonitor: FC = () => {
 
   return (
     <>
-      <div className={styles.fpsMonitorContainer}>
+      <div className={styles.fpsMonitorContainer} style={{ backgroundColor: color }}>
         FPS: {fps}
-      </div>
+      </div >
     </>
   )
 }

@@ -9,13 +9,14 @@ interface Props {
   onMouseDown?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onMouseMove?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onMouseOut?: (e: React.MouseEvent<HTMLCanvasElement>) => void
+  onWheel?: (e: React.WheelEvent<HTMLCanvasElement>) => void
   onClick?: (e: React.MouseEvent<HTMLCanvasElement>) => void
   onContextMenu?: (e: React.MouseEvent<HTMLCanvasElement>) => void
 }
 
 /**
  * 
- * This Canvas is not rerendered when the parent component is rerendered.
+ * This Canvas is NOT re-rendered when the parent component is rerendered.
  * 
  */
 export class PersistentPixelatedCanvas extends React.Component<Props> {
@@ -47,7 +48,6 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
     if (this.props.onMouseOut) this.props.onMouseOut(e)
   }
 
-
   handleOnClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (this.props.onClick) this.props.onClick(e)
   }
@@ -56,6 +56,9 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
     if (this.props.onContextMenu) this.props.onContextMenu(e)
   }
 
+  handleOnWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
+    if (this.props.onWheel) this.props.onWheel(e)
+  }
 
   render() {
     return (
@@ -67,6 +70,7 @@ export class PersistentPixelatedCanvas extends React.Component<Props> {
         onMouseDown={this.handleOnMouseDown}
         onMouseMove={this.handleOnMouseMove}
         onMouseOut={this.handleOnMouseOut}
+        onWheel={this.handleOnWheel}
         onClick={this.handleOnClick}
         onContextMenu={this.handleContextMenu}
       />

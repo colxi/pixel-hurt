@@ -45,7 +45,7 @@ export class PaintBucketTool implements EditorTool {
   private fill(x: number, y: number) {
     // If eye-dropper mode is enabled, get the color instead of painting it
     if (this.#isEyeDropperModeEnabled) {
-      this.setPixelColor(x, y)
+      this.pickColorFromPixel(x, y)
       return
     }
 
@@ -100,7 +100,7 @@ export class PaintBucketTool implements EditorTool {
     }
   }
 
-  private setPixelColor(x: number, y: number) {
+  private pickColorFromPixel(x: number, y: number) {
     const color = getColorFromCoordinates(
       x,
       y,
@@ -137,7 +137,7 @@ export class PaintBucketTool implements EditorTool {
   public onMouseMove(e: CanvasMouseEvent) {
     if (!this.#mouse.isMouseDown || !this.#isEyeDropperModeEnabled) return
     const { x, y } = getCanvasClickMouseCoords(e, this.#image.zoom)
-    this.setPixelColor(x, y)
+    this.pickColorFromPixel(x, y)
   }
 
   public onMouseDown(e: CanvasMouseEvent) {
