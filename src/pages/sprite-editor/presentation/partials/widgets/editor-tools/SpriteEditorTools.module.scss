@@ -1,47 +1,14 @@
-.toolsButton {
-  border-bottom: 1px solid #bf4f74;
-  height: 50px;
-  display: grid;
-  place-content: center;
+@use '/styles';
 
-  &[data-active='true'] {
-    color: #bf4f74;
-  }
+.toolsBar {
+  background-color: styles.$color-background;
+  border: 2px solid styles.$color-border-dark;
 }
 
-.colors {
-  position: relative;
-  height: 50px;
-  width: 100%;
-
-  .colorPrimary {
-    background-color: #bf4f74;
-    padding: 2px;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 25px;
-    height: 25px;
-    border: 1px solid #242424;
-    margin: 5px;
-    z-index: 1;
-  }
-
-  .colorSecondary {
-    background-color: #bf4f74;
-    padding: 2px;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    width: 25px;
-    height: 25px;
-    border: 1px solid #242424;
-    margin: 5px;
-    z-index: 0;
-  }
-
-  .colorBox {
-    width: 19px;
-    height: 19px;
-  }
+.toolsBarHeader {
+  background-color: styles.$color-background-dark;
+  height: 20px;
+  padding: 3px 5px;
+  font-weight: 800;
+  font-size: 9px;
 }

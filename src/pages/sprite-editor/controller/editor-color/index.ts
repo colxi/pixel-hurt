@@ -1,4 +1,4 @@
-import { HexColor } from '../../types'
+import { RgbaColor } from '../../types'
 import { EditorEventBus } from '../event-bus'
 import { palettes } from './constants'
 import { EditorColorOptions, EditorPalette } from './types'
@@ -8,14 +8,14 @@ export class EditorColor {
     this.#eventBus = eventBus
     this.#palettes = palettes
     this.#paletteId = this.#palettes[0].id
-    this.#primaryColor = '#ffffff'
-    this.#secondaryColor = '#000000'
+    this.#primaryColor = { r: 0, g: 0, b: 0, a: 255 }
+    this.#secondaryColor = { r: 255, g: 255, b: 255, a: 255 }
   }
 
   #eventBus: EditorEventBus
   #palettes: EditorPalette[]
-  #primaryColor: HexColor
-  #secondaryColor: HexColor
+  #primaryColor: RgbaColor
+  #secondaryColor: RgbaColor
   #paletteId: string
 
   public get primaryColor() {
@@ -38,12 +38,12 @@ export class EditorColor {
     return this.#palettes
   }
 
-  setPrimaryColor(color: HexColor) {
+  setPrimaryColor(color: RgbaColor) {
     this.#primaryColor = color
     this.#eventBus.dispatch(this.#eventBus.Event.PRIMARY_COLOR_CHANGE, {})
   }
 
-  setSecondaryColor(color: HexColor) {
+  setSecondaryColor(color: RgbaColor) {
     this.#secondaryColor = color
     this.#eventBus.dispatch(this.#eventBus.Event.SECONDARY_COLOR_CHANGE, {})
   }

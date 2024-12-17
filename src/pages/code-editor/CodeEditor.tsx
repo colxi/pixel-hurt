@@ -173,7 +173,7 @@ export const CodeEditor: FC = () => {
   // useEffect(() => { console.log(editorFileModels) }, [editorFileModels])
   useEffect(onEditorReady, [editorInstance])
 
-  return <>
+  return <div className="codeEditor">
     <CodeEditorContainer $isVisible={isVisible}>
       {
         editorFileModels
@@ -211,5 +211,5 @@ export const CodeEditor: FC = () => {
         />
       </EditorWrapper>
     </CodeEditorContainer >
-  </>
+  </div>
 }

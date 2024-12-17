@@ -8,18 +8,16 @@ import { ImageEditorCanvas } from './partials/image-editor-canvas/ImageEditorCan
 
 export const SpriteEditor = () => {
   return (
-    <>
-      <main className={styles.layout} onContextMenu={e => e.preventDefault()}>
-        <SpriteEditorTools />
-        <ImageEditorCanvas />
-        <aside className={styles.sidebar}>
-          <SpriteEditorInfo />
-          <SpriteEditorNavigator />
-          <SpriteEditorPalette />
-          <SpriteEditorHistory />
-        </aside>
-      </main>
-    </>
+    <main className={styles.imageEditor} onContextMenu={e => e.preventDefault()}>
+      <SpriteEditorTools />
+      <ImageEditorCanvas />
+      <aside className={styles.sidebar}>
+        <SpriteEditorInfo />
+        <SpriteEditorNavigator />
+        <SpriteEditorPalette />
+        <SpriteEditorHistory />
+      </aside>
+    </main>
   )
 }
 

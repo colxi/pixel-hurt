@@ -1,9 +1,11 @@
-.layout {
+@use '/styles';
+
+.imageEditor {
+  padding: 2px;
+  background-color: styles.$color-background;
+  height: 100%;
   display: grid;
-  grid-template-columns: 50px 500px 200px;
-  grid-template-rows: 600px;
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: 50px 1fr 200px;
   * {
     user-select: none;
   }
@@ -14,4 +16,6 @@
   grid-template-columns: 100%;
   place-content: start;
   gap: 20px;
+  background-color: styles.$color-background-darkest;
+  border: 1px solid styles.$color-background-darkest;
 }

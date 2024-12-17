@@ -1,6 +1,5 @@
 import { EditorImage } from '../../editor-image'
 import { EditorColor } from '../../editor-color'
-import { formatRgbaColorAsHex } from '@/tools/utils/formatters'
 import { EditorTool } from '../types'
 import {
   CanvasMouseEvent,
@@ -37,8 +36,7 @@ export class EyeDropperTool implements EditorTool {
       this.#image.imageBuffer
     )
     if (isTransparentColor(color)) return
-    const hexColor = formatRgbaColorAsHex(color)
-    this.#color.setPrimaryColor(hexColor)
+    this.#color.setPrimaryColor(color)
   }
 
   public onMouseDown(event: CanvasMouseEvent) {

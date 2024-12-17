@@ -7,10 +7,6 @@ import { EditorHistory } from '../../action-history'
 import { CanvasMouse } from '../../canvas-mouse'
 import { EditorImage } from '../../editor-image'
 import { EditorColor } from '../../editor-color'
-import {
-  formatHexColorAsRgba,
-  formatRgbaColorAsHex,
-} from '@/tools/utils/formatters'
 import { EditorTool } from '../types'
 import { hasKeyModifiers } from '@/tools/utils/keyboard'
 import {
@@ -49,7 +45,7 @@ export class BrushTool implements EditorTool {
     }
 
     const byteIndex = getImageByteIndexFromCoordinates(x, y, this.#image.size.w)
-    const color = formatHexColorAsRgba(this.#color.primaryColor)
+    const color = this.#color.primaryColor
     this.#image.imageBuffer[byteIndex + 0] = color.r // red
     this.#image.imageBuffer[byteIndex + 1] = color.g // green
     this.#image.imageBuffer[byteIndex + 2] = color.b // blue
@@ -65,8 +61,7 @@ export class BrushTool implements EditorTool {
       this.#image.imageBuffer
     )
     if (isTransparentColor(color)) return
-    const hexColor = formatRgbaColorAsHex(color)
-    this.#color.setPrimaryColor(hexColor)
+    this.#color.setPrimaryColor(color)
   }
 
   private onKeyDown = (e: KeyboardEvent) => {

@@ -15,7 +15,7 @@ export const ImageCanvas: FC = () => {
   const renderCanvas = async () => {
     if (!imageCanvasContext) return
     // clear the canvas
-    imageCanvasContext.fillStyle = '#bf4f74'
+    imageCanvasContext.fillStyle = '#282828'
     imageCanvasContext.fillRect(
       0,
       0,
