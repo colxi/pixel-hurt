@@ -1,0 +1,26 @@
+// primitive colors
+$primitive-color-white: #ffffff;
+$primitive-color-black: #000000;
+$primitive-color-grey-brightest: #dddddd;
+$primitive-color-grey-brighter: #989898;
+$primitive-color-grey-bright: #636363;
+$primitive-color-grey: #535353;
+$primitive-color-grey-dark: #474747;
+$primitive-color-grey-darker: #383838;
+$primitive-color-grey-darkest: #282828;
+
+// background
+$color-background-brightest: $primitive-color-grey-brightest;
+$color-background-brighter: $primitive-color-grey-brighter;
+$color-background-bright: $primitive-color-grey-bright;
+$color-background: $primitive-color-grey;
+$color-background-dark: $primitive-color-grey-dark;
+$color-background-darker: $primitive-color-grey-darker;
+$color-background-darkest: $primitive-color-grey-darkest;
+
+// border
+$color-border-brighter: $primitive-color-grey-bright;
+$color-border-bright: $primitive-color-grey;
+$color-border: $primitive-color-grey-dark;
+$color-border-dark: $primitive-color-grey-darker;
+$color-border-darker: $primitive-color-grey-darkest;

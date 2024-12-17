@@ -1,6 +1,5 @@
 import { ImageEditor } from '@/pages/sprite-editor/controller'
 import { PersistentPixelatedCanvas } from '@/tools/ui-components/persistent-pixelated-canvas/PersistentPixelatedCanvas'
-import { formatRgbaColorAsHex } from '@/tools/utils/formatters'
 import { useState } from 'react'
 
 
@@ -60,14 +59,12 @@ export const ColorPicker = () => {
 
   const handleLeftClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const color = getColorFromClick(event)
-    const colorHex = formatRgbaColorAsHex(color)
-    ImageEditor.color.setPrimaryColor(colorHex)
+    ImageEditor.color.setPrimaryColor(color)
   }
 
   const handRightClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const color = getColorFromClick(event)
-    const colorHex = formatRgbaColorAsHex(color)
-    ImageEditor.color.setSecondaryColor(colorHex)
+    ImageEditor.color.setSecondaryColor(color)
   }
 
   return <>

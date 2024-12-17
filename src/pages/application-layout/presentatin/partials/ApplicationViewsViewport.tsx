@@ -1,12 +1,13 @@
 import { Route, Routes } from 'react-router-dom'
-import { appRoutesCatalog } from '../../../global-contexts/app-router/routes/routes'
-import { CodeEditor } from '../../code-editor/CodeEditor'
-import { AppRouteOptions } from '../../../global-contexts/app-router/types'
+import { appRoutesCatalog } from '../../../../global-contexts/app-router/routes/routes'
+import { CodeEditor } from '../../../code-editor/CodeEditor'
+import { AppRouteOptions } from '../../../../global-contexts/app-router/types'
+import styles from './ApplicationViewsViewport.module.scss'
 
-export function ApplicationViewsViewPort() {
+export function ApplicationViewsViewport() {
   return (
     <>
-      <div>
+      <div className={styles.qppViewViewsPort}>
         <CodeEditor />
         <Routes>
           {Object.entries<AppRouteOptions>(appRoutesCatalog).map(([routeName, { children, component, guard }]) =>

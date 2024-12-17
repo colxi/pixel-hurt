@@ -86,19 +86,30 @@ export const HudCanvas: FC = () => {
     )
   }
 
-  const renderImageBorder = () => {
-    if (!canvasContext) return
-    canvasContext.beginPath()
-    canvasContext.strokeStyle = 'blue'
-    canvasContext.lineWidth = 1
-    canvasContext.strokeRect(
-      Math.floor((ImageEditor.image.viewBox.position.x - 1) * -1 * ImageEditor.image.zoom),
-      Math.floor((ImageEditor.image.viewBox.position.y - 1) * -1 * ImageEditor.image.zoom),
-      ImageEditor.image.size.w * ImageEditor.image.zoom,
-      ImageEditor.image.size.h * ImageEditor.image.zoom
-    )
-    canvasContext.closePath()
-  }
+  // const renderImageBorder = () => {
+  //   if (!canvasContext) return
+  //   canvasContext.shadowColor = '#474747' // Shadow color (semi-transparent black)
+  //   canvasContext.shadowBlur = 13 // Blur level
+  //   canvasContext.shadowOffsetX = 0 // Horizontal shadow offset
+  //   canvasContext.shadowOffsetY = 0 // Vertical shadow offset
+
+  //   // Set the fill color for the box
+  //   canvasContext.fillStyle = 'black' // Light blue color
+
+  //   // Draw the box
+  //   canvasContext.fillRect(
+  //     Math.floor((ImageEditor.image.viewBox.position.x - 1) * -1 * ImageEditor.image.zoom),
+  //     Math.floor((ImageEditor.image.viewBox.position.y - 1) * -1 * ImageEditor.image.zoom),
+  //     ImageEditor.image.size.w * ImageEditor.image.zoom,
+  //     ImageEditor.image.size.h * ImageEditor.image.zoom
+  //   )
+
+  //   // Reset shadow
+  //   canvasContext.shadowColor = 'transparent' // Makes shadow invisible
+  //   canvasContext.shadowBlur = 0
+  //   canvasContext.shadowOffsetX = 0
+  //   canvasContext.shadowOffsetY = 0
+  // }
 
   const renderCursor = () => {
     if (!canvasContext || !isMOuseOverCanvas) return
@@ -116,7 +127,6 @@ export const HudCanvas: FC = () => {
 
   const render = useEvent(() => {
     clearCanvas()
-    renderImageBorder()
     renderCursor()
     animation.requestFrame(render)
   })

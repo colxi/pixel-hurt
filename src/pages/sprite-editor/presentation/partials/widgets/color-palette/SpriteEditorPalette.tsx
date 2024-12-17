@@ -6,6 +6,8 @@ import { DropDown, DropDownItem, DropDownOptions } from '@/tools/ui-components/d
 import { ImageEditor } from '@/pages/sprite-editor/controller'
 import { useForceUpdate } from '@/tools/hooks'
 import { HexColor } from '@/pages/sprite-editor/types'
+import { formatHexColorAsRgba } from '@/tools/utils/formatters'
+import { isColorEqual } from '@/tools/utils/image'
 
 export const SpriteEditorPalette: FC = () => {
   const { forceUpdate } = useForceUpdate()
@@ -40,11 +42,13 @@ export const SpriteEditorPalette: FC = () => {
   }
 
   const handleColorLeftClick = (color: HexColor) => {
-    ImageEditor.color.setPrimaryColor(color)
+    const rgbaColor = formatHexColorAsRgba(color)
+    ImageEditor.color.setPrimaryColor(rgbaColor)
   }
 
   const handleColorRightClick = (color: HexColor) => {
-    ImageEditor.color.setSecondaryColor(color)
+    const rgbaColor = formatHexColorAsRgba(color)
+    ImageEditor.color.setSecondaryColor(rgbaColor)
   }
 
   useEffect(() => {
@@ -64,7 +68,7 @@ export const SpriteEditorPalette: FC = () => {
             (color, i) => (
               <div
                 className={styles.item}
-                data-active={color === ImageEditor.color.primaryColor}
+                data-active={isColorEqual(color, ImageEditor.color.primaryColor)}
                 style={{ backgroundColor: color }}
                 key={i}
                 onClick={() => handleColorLeftClick(color)}

@@ -1,0 +1,20 @@
+@use '/styles';
+
+.toolsPalette {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.toolsButton {
+  height: 34px;
+  font-size: 17px;
+  display: grid;
+  place-content: center;
+  margin: 5px;
+
+  &[data-active='true'] {
+    background: styles.$color-background-darker;
+    border: 2px solid styles.$color-border-bright;
+    border-radius: 5px;
+  }
+}

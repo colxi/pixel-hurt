@@ -1,5 +1,4 @@
 import { hasKeyModifiers } from '@/tools/utils/keyboard'
-import { formatRgbaColorAsHex } from '@/tools/utils/formatters'
 import { getColorFromByteIndex } from '@/tools/utils/image'
 import {
   getImageByteIndexFromCoordinates,
@@ -108,8 +107,7 @@ export class PaintBucketTool implements EditorTool {
       this.#image.imageBuffer
     )
     if (isTransparentColor(color)) return
-    const hexColor = formatRgbaColorAsHex(color)
-    this.#color.setPrimaryColor(hexColor)
+    this.#color.setPrimaryColor(color)
   }
 
   private onKeyDown = (e: KeyboardEvent) => {

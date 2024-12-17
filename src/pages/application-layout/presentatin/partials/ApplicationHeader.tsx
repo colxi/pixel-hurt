@@ -1,24 +1,17 @@
-import styled from 'styled-components'
-import { NavLink, Route } from 'react-router-dom'
-import { useActiveProjectContext } from '../../../global-contexts/active-project'
-import { useEffect } from 'react'
-
-const TabButton = styled(Route)`
-  color: white;
-  display:inline-block;
-  margin-right: 10px;
-`
+import { NavLink } from 'react-router-dom'
+import { useActiveProjectContext } from '../../../../global-contexts/active-project'
+import styles from './ApplicationHeader.module.scss'
 
 export function ApplicationHeader() {
   const { closeProject } = useActiveProjectContext()
 
-  const onClick = () => {
+  const handleCloseClick = () => {
     closeProject()
   }
 
   return (
     <>
-      <div>
+      <div className={styles.qppNavigation}>
         <NavLink to="/projects">Projects</NavLink>
         <NavLink to="/project/code">Code</NavLink>
         <NavLink to="/project/sprites">Sprites</NavLink>
@@ -28,7 +21,7 @@ export function ApplicationHeader() {
         <NavLink to="/project/tracks">Tracks</NavLink>
         <NavLink to="/project/run">Run</NavLink>
         <NavLink to="/community">Community</NavLink> */}
-        <span onClick={onClick}>Close</span>
+        <span onClick={handleCloseClick}>Close</span>
       </div >
     </>
   )

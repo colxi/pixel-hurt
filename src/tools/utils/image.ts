@@ -62,9 +62,8 @@ export const setColorInCoordinates = (
   y: number,
   imageWidth: number,
   imageBuffer: Uint8ClampedArray,
-  color: RgbaColor | HexColor
+  color: RgbaColor
 ): void => {
-  if (typeof color === 'string') color = formatHexColorAsRgba(color)
   const byteIndex = getImageByteIndexFromCoordinates(x, y, imageWidth)
   imageBuffer[byteIndex + 0] = color.r
   imageBuffer[byteIndex + 1] = color.g
